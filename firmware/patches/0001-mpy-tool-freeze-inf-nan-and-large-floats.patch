@@ -1,0 +1,30 @@
+diff --git a/tools/mpy-tool.py b/tools/mpy-tool.py
+index 67e2cbf..21ebdbf 100755
+--- a/tools/mpy-tool.py
++++ b/tools/mpy-tool.py
+@@ -792,13 +792,22 @@ class CompiledModule:
+             print(
+                 "#if MICROPY_OBJ_REPR == MICROPY_OBJ_REPR_A || MICROPY_OBJ_REPR == MICROPY_OBJ_REPR_B"
+             )
++            if obj != obj:
++                fstr = "__builtin_nan(\"\")"
++            elif obj in (float("inf"), float("-inf")):
++                fstr = "__builtin_inf()" if obj > 0 else "-__builtin_inf()"
++            else:
++                fstr = "%.17g" % obj
+             print(
+-                "static const mp_obj_float_t %s = {{&mp_type_float}, (mp_float_t)%.16g};"
+-                % (obj_name, obj)
++                "static const mp_obj_float_t %s = {{&mp_type_float}, (mp_float_t)%s};"
++                % (obj_name, fstr)
+             )
+             print("#define %s MP_ROM_PTR(&%s)" % (macro_name, obj_name))
+             print("#elif MICROPY_OBJ_REPR == MICROPY_OBJ_REPR_C")
+-            n = struct.unpack("<I", struct.pack("<f", obj))[0]
++            try:
++                n = struct.unpack("<I", struct.pack("<f", obj))[0]
++            except OverflowError:
++                n = struct.unpack("<I", struct.pack("<f", float("inf") if obj > 0 else float("-inf")))[0]
+             n = ((n & ~0x3) | 2) + 0x80800000
+             print("#define %s ((mp_rom_obj_t)(0x%08x))" % (macro_name, n))
+             print("#elif MICROPY_OBJ_REPR == MICROPY_OBJ_REPR_D")

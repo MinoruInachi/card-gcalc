@@ -1,0 +1,130 @@
+# Python / Shell / Files / GPIO / Settings apps, console, editor, runner.
+# English<TAB>Japanese.  Soft keys: max 4 full-width chars.
+# --- common actions
+New	新規
+Edit	編集
+Run	実行
+Rename	名前変更
+Delete	削除
+Copy	コピー
+Move	移動
+Paste	貼付け
+Save	保存
+Discard	破棄
+Cancel	キャンセル
+Open	開く
+Info	情報
+Mode	モード
+Toggle	切替
+Reset	リセット
+Mkdir	フォルダ
+New directory	新規フォルダ
+Invalid name	名前が不正です
+Delete %s?	%s を削除しますか?
+ (and contents)	 (中身ごと)
+Overwrite %s?	%s を上書きしますか?
+Rename failed	名前変更に失敗
+Delete failed	削除に失敗
+Copy failed	コピーに失敗
+Save failed	保存に失敗
+mkdir failed	フォルダ作成に失敗
+Failed	失敗
+Copied	コピーしました
+Copying...	コピー中...
+Moving...	移動中...
+# --- python app
+New script name	新しいスクリプト名
+letters, digits, _ -	英数字と _ -
+%s exists	%s は既に存在します
+%d files	%d 個
+No scripts. F1: new script	スクリプトなし。F1: 新規作成
+Copy to flash	本体へコピー
+Copy to SD	SD へコピー
+No SD card	SD カードがありません
+Cannot read %s	%s を読めません
+# --- console / shell
+[press any key]	[何かキーを押してください]
+MicroPython %s  (card-gcalc shell)	MicroPython %s  (card-gcalc シェル)
+Esc on empty line: exit, fn+;/.: history	空行で Esc: 終了  fn+;/.: 履歴
+# --- editor
+Nothing to undo	元に戻す操作がありません
+Clipboard empty	クリップボードは空です
+Saved	保存しました
+Cut %d line(s)	%d 行をカット
+Not found:	見つかりません:
+Find	検索
+Go to line	行へ移動
+Save changes?	変更を保存しますか?
+Editor keys	エディタのキー操作
+fn+;,./  move   fn+- fn+= home/end	fn+;,./ 移動  fn+- fn+= 行頭/行末
+fn+[ ]   page   Tab/sh+Tab indent	fn+[ ] ページ  Tab/sh+Tab インデント
+ctrl+s save  ctrl+r run  ctrl+z undo	ctrl+s 保存 ctrl+r 実行 ctrl+z 取消
+ctrl+f find  ctrl+n next ctrl+g goto	ctrl+f 検索 ctrl+n 次 ctrl+g 行移動
+ctrl+k cut line  ctrl+u paste	ctrl+k 行カット ctrl+u 貼付け
+ctrl+d duplicate line	ctrl+d 行を複製
+` (esc) close	` (esc) 閉じる
+opt snippets:	opt スニペット:
+# --- files
+Cannot list %s	%s を一覧できません
+hex	16進
+not mounted	未マウント
+%s: %s free / %s	%s: 空き %s / %s
+RAM free: %s	RAM 空き: %s
+Dir:	フォルダ:
+Storage	ストレージ
+Flash	本体
+MOVE	移動
+COPY	コピー
+paste: F3	貼付け: F3
+(empty)	(空)
+<DIR>	<フォルダ>
+SD card	SD カード
+Mount	マウント
+Unmount	アンマウント
+Unmounted	アンマウントしました
+Mounted at	マウント先
+Mounting SD...	SD をマウント中...
+No SD card / mount failed	SD カードなし / マウント失敗
+# --- gpio
+PIN	ピン
+WHERE	場所
+MODE	モード
+VALUE	値
+Grove W	Grove 白
+Grove Y	Grove 黄
+G%d (%s) mode	G%d (%s) のモード
+G%d PWM frequency (Hz)	G%d PWM 周波数 (Hz)
+G%d duty (0-100 %%)	G%d デューティ比 (0-100 %%)
+I2C scan	I2C スキャン
+Scanning I2C...	I2C をスキャン中...
+n/a in the simulator	シミュレータでは使えません
+no devices	デバイスなし
+error	エラー
+Internal	内部
+# --- settings
+Angle unit	角度単位
+Radian	ラジアン
+Degree	度
+Gradian	グラジアン
+Number format	表示形式
+Complex results	複素数
+Brightness	輝度
+fn+, fn+/ (or , /): -/+   Enter: OK	fn+, fn+/ (, /): -/+  Enter: 決定
+SD auto-mount	SD 自動マウント
+mounted	マウント中
+Memory & storage	メモリと容量
+About	バージョン情報
+Reset all data	全データ初期化
+Reset all data?	全データを初期化しますか?
+Settings, variables, history	設定・変数・履歴
+All data cleared.	全データを消去しました。
+RAM  free %s  used %s	RAM  空き %s  使用 %s
+Flash fs  %s free / %s	本体    空き %s / %s
+SD card   %s free / %s	SD      空き %s / %s
+SD card   not mounted	SD      未マウント
+Scripts   %d in %s	スクリプト %d 個 (%s)
+Battery   %d %%	バッテリー %d %%
+Graphing calculator for	グラフ電卓
+Fonts: X11 misc-fixed (public domain)	フォント: X11 misc-fixed (PD)
+Japanese: k8x12 (Num Kadoma)	日本語: k8x12 (門真なむ)
+CPU %d MHz	CPU %d MHz

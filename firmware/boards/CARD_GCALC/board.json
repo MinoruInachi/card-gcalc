@@ -1,0 +1,10 @@
+{
+    "deploy": ["../deploy_nativeusb.md"],
+    "docs": "",
+    "features": ["BLE off", "Double precision float"],
+    "images": [],
+    "mcu": "esp32s3",
+    "product": "M5Stack Cardputer-Adv (card-gcalc)",
+    "url": "https://docs.m5stack.com/en/core/Cardputer-Adv",
+    "vendor": "M5Stack"
+}

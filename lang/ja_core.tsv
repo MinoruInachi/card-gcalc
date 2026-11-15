@@ -1,0 +1,55 @@
+# Core UI (home, ui widgets, calc, splash).  English<TAB>Japanese
+# Keep soft-key labels <= 4 full-width characters (40px), home labels <= 7.
+# --- home
+Calc	計算
+Graph	グラフ
+Table	数表
+Equation	方程式
+Stats	統計
+Matrix	行列
+Base Conv	進数計算
+Python	Python
+Shell	シェル
+Files	ファイル
+GPIO	GPIO
+Settings	設定
+;,./ move  Enter open  fn+h keys	;,./移動 Enter起動 fn+hキー一覧
+graphing calculator	グラフ電卓
+safe mode: REPL on USB	セーフモード: USB で REPL
+Fatal error (REPL on USB)	致命的エラー (USB で REPL)
+# --- ui widgets
+Error	エラー
+Enter: yes   Esc: no	Enter: はい   Esc: いいえ
+Working...	処理中...
+;. scroll  ` back	;.スクロール `戻る
+Key map (opt/alt/fn)	キー割り当て (opt/alt/fn)
+# --- calc
+Exact	厳密
+Vars	変数
+Angle	角度
+Format	表示
+Clear	クリア
+Keys	キー
+Enter:expr  /:result  BS:delete  `:back	Enter:式 /:結果 BS:削除 `:戻る
+Variables	変数
+No variables yet.\nUse  expr→A  or  A=expr	変数はまだありません。\n式→A または A=式 で代入
+Variables (Enter: insert)	変数 (Enter: 挿入)
+Display format	表示形式
+Complex	複素数
+on	オン
+off	オフ
+Digits (0-9)	小数点以下の桁数 (0-9)
+Significant digits (1-10)	有効桁数 (1-10)
+Clear history?	履歴を消去しますか?
+# --- calculation errors
+Syntax error	構文エラー
+Math error	計算エラー
+Math error: ÷0	計算エラー: 0除算
+Math error: overflow	計算エラー: オーバーフロー
+Non-real error	非実数エラー
+Argument error	引数エラー
+Dimension error	次元エラー
+No solution	解なし
+# --- key map help (fn lines)
+; . , / arrows  ` esc  1-6 F1-F6	;.,/ 矢印  ` 戻る  1-6 F1-F6
+BS del  - home  = end  [ ] page	BS 削除 - 行頭 = 行末 [ ] ページ

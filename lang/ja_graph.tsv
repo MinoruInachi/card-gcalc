@@ -1,0 +1,66 @@
+# Graph / Table (src/nc/apps/graph.py, table.py).  English<TAB>Japanese
+# Graph, Table: see ja_core.tsv
+# --- soft keys (<= 4 full-width chars)
+Trace	トレース
+Zoom	ズーム
+View	表示範囲
+Analyze	解析
+Auto	自動
+On/Off	表示切替
+Type	種類
+Draw	描画
+Start	開始
+Step	刻み
+Go to x	xへ移動
+Go to t	tへ移動
+# --- titles / status
+Graph: Y=	グラフ: Y=
+Functions	関数
+View window	表示範囲
+Analysis	グラフ解析
+Analysis %s	グラフ解析 %s
+Intersect with	交点の相手
+# --- busy
+Plotting...	描画中...
+Solving...	計算中...
+Integrating...	積分中...
+Fitting...	調整中...
+# --- Analysis
+Root	根
+Min	最小
+Max	最大
+Intersect	交点
+y at x	xでのy値
+x at y	yでのx値
+Isect %s,%s	交点 %s,%s
+%s: none in view	%s: 表示範囲内になし
+dy/dx undefined at x=%s	x=%s で dy/dx 未定義
+∫dx lower bound	∫dx 下端
+∫dx upper bound	∫dx 上端
+Only for y=f(x) functions	y=f(x) の関数のみ対応
+Need two y=f(x) functions	y=f(x) の関数が2つ必要
+undef	未定義
+undefined	未定義
+cplx	複素
+# --- zoom
+Zoom in	拡大
+Zoom out	縮小
+Standard	標準
+Trig	三角
+Integer	整数
+Square	正方
+Auto fit	自動調整
+# --- view window
+Xscale	X目盛
+Yscale	Y目盛
+Reset to default	初期値に戻す
+%s (now %s)	%s (現在 %s)
+Invalid range	範囲が不正です
+# --- Y= list
+No function selected.\nSelect one with F1 in Y=.	関数が選択されていません。\nY= 画面の F1 で選択してください
+Enter:OK  `:cancel  opt/alt:math  fn+h:keys	Enter:確定 `:取消 opt/alt:数式 fn+h:キー
+Clear %s?	%s を消去しますか?
+# --- table
+Table start	数表の開始値
+Table step	数表の刻み
+Step must not be 0	刻みに 0 は指定できません

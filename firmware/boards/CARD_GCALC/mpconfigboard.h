@@ -1,0 +1,28 @@
+// card-gcalc: graphing calculator firmware for M5Stack Cardputer-Adv
+#define MICROPY_HW_BOARD_NAME               "M5Stack Cardputer-Adv (card-gcalc)"
+#define MICROPY_HW_MCU_NAME                 "ESP32S3"
+
+// The Cardputer-Adv uses the native USB-Serial/JTAG for the REPL.
+#define MICROPY_HW_ENABLE_UART_REPL         (0)
+
+// Internal I2C bus (keyboard TCA8418, ES8311 codec, BMI270 IMU).
+#define MICROPY_HW_I2C0_SCL                 (9)
+#define MICROPY_HW_I2C0_SDA                 (8)
+
+// BLE is not used by the calculator (and NimBLE fails to build on IDF 5.5.4).
+#define MICROPY_PY_BLUETOOTH                (0)
+
+// A calculator needs double precision floats.
+#define MICROPY_FLOAT_IMPL                  (MICROPY_FLOAT_IMPL_DOUBLE)
+#define MICROPY_PY_MATH_SPECIAL_FUNCTIONS   (1)
+#define MICROPY_PY_MATH_FACTORIAL           (1)
+#define MICROPY_PY_MATH_ISCLOSE             (1)
+#define MICROPY_PY_CMATH                    (1)
+
+// Larger initial GC heap: no PSRAM, and the 240x135 RGB565 frame buffer is ~64KB.
+#define MICROPY_GC_INITIAL_HEAP_SIZE        (176 * 1024)
+
+// Use the ESP32-S3 built-in USB-Serial/JTAG for the REPL instead of TinyUSB.
+// Resetting into the bootloader is then handled by silicon, so esptool can
+// always reflash the board even if the firmware is stuck.
+#define MICROPY_HW_ENABLE_USBDEV            (0)

@@ -1,0 +1,167 @@
+# Equation / Stats / Matrix / Base Conv.  English<TAB>Japanese
+# Soft-key labels: max 4 full-width characters.
+# --- shared helpers (gridedit)
+Run	実行
+Solve	解く
+Store %s to variable	%s を変数に代入
+Letter (A-Z, x, y...)	文字 (A-Z, x, y...)
+Invalid variable name	変数名が不正です
+Stored	保存しました
+Enter: store to var   ` back	Enter: 変数に代入  ` 戻る
+Result	結果
+Results	結果
+# --- equation
+Polynomial	多項式
+Polynomial degree	多項式の次数
+Degree 2  ax²+bx+c=0	2次  ax²+bx+c=0
+Degree 3  ax³+...=0	3次  ax³+...=0
+Degree 4  ax⁴+...=0	4次  ax⁴+...=0
+Leading coefficient\nmust not be 0	最高次の係数は\n0 にできません
+Not a polynomial	多項式ではありません
+vertex x	頂点 x
+min y	最小値 y
+max y	最大値 y
+Roots	解
+Unknowns	未知数の個数
+2 unknowns (x, y)	2元 (x, y)
+3 unknowns (x, y, z)	3元 (x, y, z)
+4 unknowns (x, y, z, t)	4元 (x, y, z, t)
+Linear system	連立方程式
+Infinitely many solutions	解が無数にあります
+Solution	解
+Solutions	解
+Solver	ソルバ
+Solver  f(x)=g(x)	ソルバ  f(x)=g(x)
+Solver (in x)	ソルバ (変数 x)
+Lower x	下限 x
+Upper x	上限 x
+Need lower < upper	下限 < 上限 にしてください
+Solving...	計算中...
+No solution in	範囲内に解なし
+# --- stats
+Statistics	統計
+Dist	分布
+Ins	挿入
+Del	削除
+List	リスト
+Real numbers only	実数のみ入力できます
+None (all 1)	なし (すべて1)
+1-Var: data list	1変数: データ
+1-Var: frequency	1変数: 度数
+1-Var stats	1変数統計
+2-Var: X list	2変数: X リスト
+2-Var: Y list	2変数: Y リスト
+2-Var stats	2変数統計
+freq	度数
+Regression	回帰
+Regression: X list	回帰: X リスト
+Regression: Y list	回帰: Y リスト
+form	式
+Enter: store	Enter: 代入
+<- -> trace   ` back	←→ トレース  ` 戻る
+No data	データがありません
+Scatter	散布図
+Scatter plot	散布図
+Scatter + regression	散布図 + 回帰
+Scatter: X list	散布図: X リスト
+Scatter: Y list	散布図: Y リスト
+Histogram	ヒストグラム
+Histogram: data list	ヒストグラム: データ
+Histogram: frequency	ヒストグラム: 度数
+Box plot	箱ひげ図
+Box plot (all lists)	箱ひげ図 (全リスト)
+Bin width	階級の幅
+start=%s	開始=%s
+Invalid width	幅が不正です
+Too many bins	階級が多すぎます
+Distributions	確率分布
+Normal pdf	正規分布 pdf
+Normal cdf	正規分布 cdf
+Inverse normal	逆正規分布
+Binomial pdf	二項分布 pdf
+Binomial cdf	二項分布 cdf
+Poisson pdf	ポアソン分布 pdf
+Poisson cdf	ポアソン分布 cdf
+Lower	下限
+Upper	上限
+Area	面積
+Tail L/R/C	裾 L/R/C
+z low	z 下限
+z up	z 上限
+List %s	リスト %s
+Sort ascending	昇順ソート
+Sort descending	降順ソート
+Clear %s	%s をクリア
+Clear all lists	全リストをクリア
+Fill sequence...	数列で埋める...
+Copy %s to...	%s をコピー...
+Copy %s to	%s のコピー先
+Clear %s?	%s を消去しますか?
+Clear all lists?	全リストを消去しますか?
+Expr in x	x の式
+x start	x 開始
+x end	x 終了
+step	刻み
+Fill	生成
+Fill %s	%s を生成
+Too many items	項目が多すぎます
+mean	平均
+mean x	平均 x
+mean y	平均 y
+median	中央値
+min	最小
+max	最大
+IQR	四分位範囲
+range	範囲
+mode	最頻値
+Frequency < 0	度数 < 0
+Need ≥2 points	2点以上必要です
+Need ≥3 points	3点以上必要です
+Needs y>0	y>0 が必要です
+Needs x>0	x>0 が必要です
+Needs x>0, y>0	x>0, y>0 が必要です
+Unknown regression	不明な回帰
+Linear  y=ax+b	1次  y=ax+b
+Quadratic  y=ax²+bx+c	2次  y=ax²+bx+c
+Exponential  y=a·e^(bx)	指数  y=a·e^(bx)
+Logarithmic  y=a+b·ln(x)	対数  y=a+b·ln(x)
+Power  y=a·x^b	べき乗  y=a·x^b
+# --- matrix
+empty	なし
+Integer required	整数を入力してください
+Enter = %d	空欄 = %d
+Range %d..%d	範囲 %d..%d
+Rows (1-%d)	行数 (1-%d)
+Columns (1-%d)	列数 (1-%d)
+Make square %d×%d?	%d×%d の正方行列にしますか?
+Delete matrix %s?	行列 %s を削除しますか?
+Matrix %s	行列 %s
+Dim	次元
+Ident	単位
+Zero	ゼロ
+Ops	演算
+Delete	削除
+Store	保存先
+Store result to	結果の保存先
+Result stored in %s	結果を %s に保存しました
+No matrices defined	行列が定義されていません
+Mat %s	行列 %s
+Matrix operations	行列の演算
+Operations...	演算...
+Inverse X⁻¹	逆行列 X⁻¹
+Transpose XT	転置 XT
+Rank	ランク
+Solve X·v = Y	解く X·v = Y
+Trace	トレース
+%s transposed	%s の転置
+Y must be a column\nvector (n×1)	Y は列ベクトル\n(n×1) にしてください
+Singular matrix	特異行列です
+n (integer)	n (整数)
+# --- base-n
+signed	符号付
+unsign	符号無
+Invalid DEC number	不正な10進数
+Invalid HEX number	不正な16進数
+Invalid OCT number	不正な8進数
+Invalid BIN number	不正な2進数
+Negative shift	負のシフト量

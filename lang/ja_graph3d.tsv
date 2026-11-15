@@ -1,0 +1,82 @@
+3D Graph	3Dグラフ
+Param	パラメーター
+Line	直線
+Plane	平面
+Sphere	球
+Cylinder	円柱
+Cone	円錐
+Rot X	X軸回転体
+Rot Y	Y軸回転体
+Point & vector	点とベクトル
+Two points	2点
+Point & 2 vectors	点と2ベクトル
+Three points	3点
+Vector l	ベクトル l
+Vector m	ベクトル m
+Vector n	ベクトル n
+Radius	半径
+Center X	中心 X
+Center Y	中心 Y
+Base Z	底面の Z
+Apex Z	頂点の Z
+Blue	青
+Red	赤
+Green	緑
+Magenta	マゼンタ
+Cyan	シアン
+Yellow	黄
+Orange	オレンジ
+White	白
+Color	色
+Select	選択
+Window	範囲
+Rotate	回転
+Angle θ	角度 θ
+Angle φ	角度 φ
+Label	ラベル
+Axes	軸
+Box	外枠
+Mesh	メッシュ線
+3D View Window	3D 表示範囲
+Set	設定
+View along X	X 軸方向から見る
+View along Y	Y 軸方向から見る
+View along Z	Z 軸方向から見る
+Original view	元の表示
+Left → right	左 → 右
+Right → left	右 → 左
+Top → bottom	上 → 下
+Bottom → top	下 → 上
+Cross section	断面
+Intersection	交点・交線
+Relation	位置関係
+Up	上へ
+Down	下へ
+View X	X方向
+View Y	Y方向
+View Z	Z方向
+Orig	元に戻す
+Next	次へ
+Back	前へ
+Not found	見つかりません
+Infinite (same line)	無数 (同じ直線)
+Infinite (on the plane)	無数 (平面上の直線)
+Infinite (same plane)	無数 (同じ平面)
+Point	点
+Circle	円
+Intersecting	交わる
+Perpendicular	垂直
+Parallel	平行
+Skew	ねじれの位置
+Same line	同じ直線
+Same plane	同じ平面
+On the plane	平面上にある
+Perpendicular, intersecting	垂直に交わる
+Skew, perpendicular	ねじれの位置 (垂直)
+Not supported	未対応
+Need two lines/planes	直線・平面が 2 つ必要です
+Need two lines/planes/spheres	直線・平面・球が 2 つ必要です
+No graph	グラフがありません
+Invalid setting	設定が正しくありません
+Drawing...	描画中...
+Out of range	範囲外です

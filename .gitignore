@@ -1,0 +1,9 @@
+firmware/build/
+__pycache__/
+*.mpy
+.DS_Store
+/sim_out/
+dev_out/
+sim_out*/
+sim_out_int_app*.png
+deps/

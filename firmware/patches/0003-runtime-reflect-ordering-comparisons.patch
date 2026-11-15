@@ -1,0 +1,28 @@
+diff --git a/py/runtime.c b/py/runtime.c
+index dcfb968..5431f6d 100644
+--- a/py/runtime.c
++++ b/py/runtime.c
+@@ -637,6 +637,23 @@ generic_binary_op:
+         }
+     }
+ 
++    // card-gcalc: reflect ordering comparisons (a < b  ->  b > a) so that a
++    // numeric type from a C module can be compared with int/float on either side.
++    if (op == MP_BINARY_OP_LESS || op == MP_BINARY_OP_MORE
++        || op == MP_BINARY_OP_LESS_EQUAL || op == MP_BINARY_OP_MORE_EQUAL) {
++        const mp_obj_type_t *rtype = mp_obj_get_type(rhs);
++        if (rtype != type && MP_OBJ_TYPE_HAS_SLOT(rtype, binary_op)) {
++            mp_binary_op_t rop = op == MP_BINARY_OP_LESS ? MP_BINARY_OP_MORE
++                : op == MP_BINARY_OP_MORE ? MP_BINARY_OP_LESS
++                : op == MP_BINARY_OP_LESS_EQUAL ? MP_BINARY_OP_MORE_EQUAL
++                : MP_BINARY_OP_LESS_EQUAL;
++            mp_obj_t result = MP_OBJ_TYPE_GET_SLOT(rtype, binary_op)(rop, rhs, lhs);
++            if (result != MP_OBJ_NULL) {
++                return result;
++            }
++        }
++    }
++
+     // If this was an inplace method, fallback to the corresponding normal method.
+     // https://docs.python.org/3/reference/datamodel.html#object.__iadd__ :
+     // "If a specific method is not defined, the augmented assignment falls back
