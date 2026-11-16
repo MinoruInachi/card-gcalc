@@ -246,11 +246,15 @@ Settings の「Language / 言語」で English / 日本語 を切り替えると
 必要なもの: ESP-IDF v5.5.x (v5.5.4 で確認)、Python 3 (esptool、mpremote、Pillow)。
 
 ```sh
-tools/setup.sh                    # MicroPython v1.29.0 と ulab 6.12.1 を deps/ に取得し、mpy-cross と unix 版 (ulab 入り) をビルド
+git clone --recurse-submodules https://github.com/MinoruInachi/card-gcalc.git
+cd card-gcalc
+tools/setup.sh                    # submodule の MicroPython v1.29.0 と ulab 6.12.1 を deps/ に取得し、mpy-cross と unix 版 (ulab 入り) をビルド
 IDF_PATH=/path/to/esp-idf firmware/build.sh
 firmware/flash.sh                 # /dev/cu.usbmodem* に書き込む
 ```
 
+- MicroPython と ulab は git submodule (`deps/micropython`、`deps/ulab`) です。`--recurse-submodules` を付けずに clone した場合も、`tools/setup.sh` が取得します。
+  - パッチを当てると `deps/micropython` の作業ツリーが変更されますが、`.gitmodules` の `ignore = dirty` により、親リポジトリの `git status` には表示されません。
 - ulab は C モジュールとして組み込みます。標準の -O2 では約 1.7MB 増えてアプリ領域に入らないため、ulab だけ -Os でコンパイルしています (増加は約 150KB)。
 - `firmware/patches/` にある MicroPython へのパッチは、ビルド時に自動で適用されます。
   - mpy-tool が inf を含む float 定数を frozen できるようにする修正
@@ -294,4 +298,4 @@ tests/               ホスト用テスト
 
 ## ライセンス
 
-MIT (LICENSE)。フォント (src/nc/fonts) のうち、英数字は X11 misc-fixed (パブリックドメイン)、日本語 (jp8x12.py) は k8x12L (© Num Kadoma) から変換したものです。k8x12 は「改変の有無・商用利用を問わず、自由に利用・複製・再配布できる」フリーソフトウェアです。ファームウェアに組み込む ulab (deps/ulab に取得) は MIT ライセンスです。
+MIT (LICENSE)。フォント (src/nc/fonts) のうち、英数字は X11 misc-fixed (パブリックドメイン)、日本語 (jp8x12.py) は k8x12L (© Num Kadoma) から変換したものです。k8x12 は「改変の有無・商用利用を問わず、自由に利用・複製・再配布できる」フリーソフトウェアです。ファームウェアに組み込む ulab (submodule の deps/ulab) は MIT ライセンスです。

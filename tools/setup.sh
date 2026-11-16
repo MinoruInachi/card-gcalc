@@ -1,15 +1,10 @@
 #!/bin/sh
-# Fetch MicroPython v1.29.0 and ulab 6.12.1 into deps/ and build the host
-# tools (mpy-cross and the unix port with ulab used by the simulator).
+# Check out the MicroPython v1.29.0 and ulab 6.12.1 submodules in deps/ and
+# build the host tools (mpy-cross and the unix port with ulab used by the
+# simulator).
 set -e
 cd "$(dirname "$0")/.."
-if [ ! -d deps/micropython ]; then
-  mkdir -p deps
-  git clone --depth 1 -b v1.29.0 https://github.com/micropython/micropython.git deps/micropython
-fi
-if [ ! -d deps/ulab ]; then
-  git clone --depth 1 -b 6.12.1 https://github.com/v923z/micropython-ulab.git deps/ulab
-fi
+git submodule update --init deps/micropython deps/ulab
 make -C deps/micropython/mpy-cross -j8
 make -C deps/micropython/ports/unix submodules
 # C modules for the unix port: bcd (decimal numbers) and ulab

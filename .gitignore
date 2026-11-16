@@ -6,4 +6,4 @@ __pycache__/
 dev_out/
 sim_out*/
 sim_out_int_app*.png
-deps/
+deps/unix_cmodules/

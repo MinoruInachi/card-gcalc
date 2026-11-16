@@ -1,0 +1,9 @@
+[submodule "deps/micropython"]
+	path = deps/micropython
+	url = https://github.com/micropython/micropython.git
+	shallow = true
+	ignore = dirty
+[submodule "deps/ulab"]
+	path = deps/ulab
+	url = https://github.com/v923z/micropython-ulab.git
+	shallow = true
