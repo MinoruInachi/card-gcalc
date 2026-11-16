@@ -5,9 +5,11 @@ from nc import hal
 if hal.IS_DEVICE:
     DATA = "/data"
     PROGRAMS = "/programs"
+    PLUGINS = "/plugins"
 else:
     DATA = "sim_out/fs/nc"
     PROGRAMS = "sim_out/fs/programs"
+    PLUGINS = "sim_out/fs/plugins"
 SD = "/sd"
 _sd = None
 
@@ -30,6 +32,7 @@ def _mkdirs(p):
 def ensure_dirs():
     _mkdirs(DATA)
     _mkdirs(PROGRAMS)
+    _mkdirs(PLUGINS)
 
 
 def path(name):

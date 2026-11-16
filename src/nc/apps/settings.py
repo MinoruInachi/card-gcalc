@@ -1,5 +1,5 @@
 # Settings: angle unit, number format, complex mode, brightness, SD card,
-# memory / storage info, about, reset.
+# plugins, memory / storage info, about, reset.
 import gc
 import os
 import sys
@@ -9,7 +9,7 @@ from nc import i18n
 from nc.i18n import T
 from nc.hal import LEFT, RIGHT, ENTER, ESC
 
-VERSION = "0.1"
+VERSION = "0.2"
 
 
 def _onoff(v):
@@ -178,6 +178,7 @@ def run():
             ("Brightness", "%d%%" % S.get("brightness")),
             ("SD auto-mount", _onoff(S.get("sd_mount"))),
             ("SD card", "mounted" if storage.sd_mounted() else "-"),
+            ("Plugins", ""),
             ("Memory & storage", ""),
             ("About", ""),
             ("Reset all data", ""),
@@ -204,8 +205,12 @@ def run():
         elif i == 6:
             toggle_sd()
         elif i == 7:
-            memory_info()
+            from nc import plugins
+
+            plugins.manage()
         elif i == 8:
-            about()
+            memory_info()
         elif i == 9:
+            about()
+        elif i == 10:
             reset_all()

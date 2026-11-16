@@ -7,3 +7,4 @@ dev_out/
 sim_out*/
 sim_out_int_app*.png
 deps/unix_cmodules/
+/build/

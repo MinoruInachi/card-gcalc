@@ -1,0 +1,11 @@
+{
+  "api": 1,
+  "name": "BASIC",
+  "version": "1.0",
+  "module": "basic",
+  "glyph": "BAS",
+  "color": [200, 90, 40],
+  "files": [".bas"],
+  "description": "Structured BASIC interpreter (sample plugin)",
+  "description_ja": "構造化 BASIC インタプリタ (サンプルプラグイン)"
+}

@@ -26,3 +26,7 @@
 // Resetting into the bootloader is then handled by silicon, so esptool can
 // always reflash the board even if the firmware is stuck.
 #define MICROPY_HW_ENABLE_USBDEV            (0)
+
+// Deeper recursion for Python and the BASIC plugin (default 16KB: ~48 Python
+// call levels).
+#define MICROPY_TASK_STACK_SIZE             (32 * 1024)

@@ -212,6 +212,11 @@ class Files:
             self.refresh()
             return
         opts = ["Open"]
+        from nc import plugins
+
+        ph = plugins.handler(name)
+        if ph is not None:
+            opts.insert(0, "Open with: " + plugins.label(ph))
         is_py = name.endswith(".py")
         is_text = name.endswith(TEXT_EXT)
         if is_py:
@@ -223,7 +228,9 @@ class Files:
         if i is None:
             return
         act = opts[i]
-        if act == "Open":
+        if act.startswith("Open with: "):
+            plugins.launch(ph, "open_file", p)
+        elif act == "Open":
             view(p)
         elif act == "Run":
             from nc import runner

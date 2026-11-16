@@ -7,6 +7,7 @@ M5Stack [Cardputer-Adv](https://docs.m5stack.com/ja/core/Cardputer-Adv) を、Mi
 - Python スクリプトの float は倍精度 (double) です。MicroPython の esp32 ポートは標準では単精度です
 - Python プログラムを作成・編集・実行できます (エディタ、REPL、グラフィックス API、numpy 互換の ulab 付き)
 - microSD カードの読み書きと、GPIO (Grove・拡張ヘッダ) の入出力に対応しています
+- プラグインで、ファームウェアを書き直さずにアプリを追加できます (サンプルとして BASIC インタプリタを同梱)
 - 表示言語を英語と日本語で切り替えられます (Settings → Language / 言語)
 
 ## アプリ
@@ -25,7 +26,9 @@ M5Stack [Cardputer-Adv](https://docs.m5stack.com/ja/core/Cardputer-Adv) を、Mi
 | 10 | **Shell** | シェル | Python REPL (履歴、複数行ブロック) |
 | 11 | **Files** | ファイル | フラッシュ・SD のファイル操作 (閲覧、コピー・移動、削除、名前変更、mkdir、SD のマウント・アンマウント) |
 | 12 | **GPIO** | GPIO | G1/G2 (Grove) と G3/G4/G5/G6/G13/G15 (EXT) の IN / OUT / ADC / PWM、I2C スキャン |
-| 13 | **Settings** | 設定 | 角度単位、表示形式、複素数、輝度、SD 自動マウント、メモリ情報、初期化 |
+| 13 | **Settings** | 設定 | 角度単位、表示形式、複素数、輝度、SD 自動マウント、プラグインの管理、メモリ情報、初期化 |
+
+インストールしたプラグインは、Settings の後ろに並びます。
 
 ## 3D グラフ
 
@@ -218,6 +221,134 @@ nc.pin_out(nc.G1, 1); v = nc.analog(nc.G2); nc.pwm(nc.G1, 1000, 50); i2c = nc.i2
 | `tone(p, freq, ms)` | p に圧電ブザーなどをつないで、音を ms ミリ秒鳴らす |
 | `i2c_grove(freq=100000)` | Grove ポート (SDA=G2、SCL=G1) の I2C (`machine.SoftI2C`) |
 
+## プラグイン
+
+ファームウェアを書き直さずに、アプリを追加できます。プラグインは、フラッシュの `/plugins/<名前>/` か SD カードの `/sd/plugins/<名前>/` に置くフォルダです。ホーム画面には、組み込みアプリの後ろに並びます。
+
+```
+/plugins/basic/
+  plugin.json        マニフェスト
+  basic.mpy          入口のモジュール (run() でアプリを開始する)
+  baslang.mpy        ほかのモジュールやデータも置ける
+  examples/...
+```
+
+`plugin.json` の例:
+
+```json
+{
+  "api": 1,
+  "name": "BASIC",
+  "name_ja": "BASIC",
+  "version": "1.0",
+  "module": "basic",
+  "glyph": "BAS",
+  "color": [200, 90, 40],
+  "files": [".bas"],
+  "description": "Structured BASIC interpreter"
+}
+```
+
+| キー | 内容 |
+|---|---|
+| `api` | 対象とするプラグイン API の版。ファームウェアの版 (`nc.plugins.API`、現在 1) より新しいと読み込まない |
+| `name` / `name_ja` | ホーム画面の名前 (日本語表示のときは `name_ja`) |
+| `module` | 入口のモジュール名。省略するとフォルダ名 |
+| `icon` / `glyph` | アイコン。`icon` は組み込みアイコンの名前 (`calc`、`graph` など)。`glyph` はタイルに描く 1〜4 文字 |
+| `color` | タイルの色 `[r, g, b]` |
+| `files` | 担当する拡張子。ファイルアプリの「開くアプリ」から、入口モジュールの `open_file(path)` が呼ばれる |
+| `description` / `description_ja` | Settings → Plugins の情報画面に出す説明 |
+
+入口のモジュールの書き方:
+
+- `run()` を定義します。アプリが終わったら return します。
+- 実行中は、プラグインのフォルダが `sys.path` の先頭に入ります。同じフォルダのモジュールはそのまま import できます。
+- `nc.plugins.current` で、自分のマニフェスト (`dir` にフォルダのパス) を参照できます。
+- 終了すると、プラグインのフォルダから読み込んだモジュールは解放されます。
+- 例外は画面に表示されます。
+- 本体のモジュールをそのまま使えます。
+  - `nc.hal`: キーボード・LCD
+  - `nc.gfx`、`nc.ui`: メニュー・入力欄・メッセージ
+  - `nc.console`: スクロールするテキスト画面
+  - `nc.editor`: エディタ
+  - `nc.runner`: 中断キーと描画の自動更新
+  - `nc.storage`、`cardgcalc`
+- `nc.plugins.translator({"English": "日本語", ...})` で、そのプラグイン専用の翻訳関数 `T()` を作れます。
+- エディタは、`nc.editor.edit(path, syntax)` で Python 以外の言語にも使えます。`syntax` には、色分け・スニペット・自動インデントを指定します (`nc.editor.Syntax` を参照)。
+
+インストール (PC から USB で転送):
+
+```sh
+tools/plugin.sh install plugins/basic      # .py を .mpy にコンパイルして /plugins/basic に転送し、再起動
+tools/plugin.sh install-py plugins/basic   # .py のまま転送する (デバッグ用)
+tools/plugin.sh build plugins/basic        # build/plugins/basic に .mpy を作る (SD カードにコピーする場合)
+tools/plugin.sh remove basic               # 実機から削除
+```
+
+`build/plugins/basic` を SD カードの `/plugins/basic` にコピーしても使えます。ファイルアプリで本体の `/plugins` にコピーしても使えます。.mpy は .py より読み込みが速く、使う RAM も少なくなります。RAM のヒープは 176KB しかないので、大きいプラグインは .mpy にしてください。
+
+Settings → Plugins では、プラグインの有効・無効の切り替え、情報の表示、削除ができます。
+
+## BASIC (サンプルプラグイン)
+
+`plugins/basic` は、行番号を使わない構造化 BASIC のインタプリタです。`tools/plugin.sh install plugins/basic` でインストールすると、ホーム画面に「BASIC」が加わります。
+
+- 起動するとダイレクトモードになります。
+  - 命令 (`PRINT 2^10`、`x = 5`) や式 (`x * 2`) を入力すると、すぐに実行します。
+  - 読み込んだプログラムの変数・SUB・FUNCTION も使えます。
+- コマンド:
+  - `FILES`: プログラムの一覧。実行・編集・削除・新規作成ができます。
+  - `EDIT 名前`: エディタで開きます。エディタで ctrl+r を押すと実行します。
+  - `RUN [名前]`、`LOAD 名前`、`LIST`、`NEW`、`HELP`
+  - `BYE` または空行で Esc: 終了します。
+- 実行中のプログラムは、Esc か ctrl+c で中断できます。
+- プログラムは `/programs/*.bas` (と `/sd/programs/*.bas`) に保存します。
+  - 初回起動時に、サンプル (hello, primes, guess, hanoi, graphics, plot) をコピーします。
+  - ファイルアプリで .bas を選んだときも、「開くアプリ: BASIC」から実行・編集できます。
+
+```basic
+' 素数を数える
+FUNCTION isprime(n)
+  LOCAL d
+  IF n < 2 THEN RETURN 0
+  FOR d = 2 TO SQR(n)
+    IF n MOD d = 0 THEN RETURN 0
+  NEXT
+  RETURN -1
+END FUNCTION
+
+count = 0
+FOR n = 2 TO 1000
+  IF isprime(n) THEN count = count + 1
+NEXT
+PRINT count; " primes"
+```
+
+言語の概要 (詳しくは BASIC の `HELP`):
+
+- **書き方**: 大文字と小文字は区別しません。`:` で 1 行に複数の命令を書けます。`'` か `REM` でコメントです。
+- **変数**: 宣言せずに使えます。`$` で終わる名前の初期値は `""`、それ以外は 0 です。値は数値か文字列です (整数と倍精度の実数)。
+  - 配列は `DIM a(10), m(3, 3)` で作り、添字は 0〜n です。
+  - 変数はグローバルです。SUB・FUNCTION の引数と、`LOCAL` で宣言した変数だけがローカルです。
+- **制御構造**:
+  - `IF ... THEN ... ELSEIF ... ELSE ... END IF` と、1 行の `IF c THEN 文 ELSE 文`
+  - `FOR ... TO ... STEP ... NEXT`、`WHILE ... WEND`
+  - `DO [WHILE|UNTIL] ... LOOP [WHILE|UNTIL]`
+  - `SELECT CASE` (`CASE 1, 2`、`CASE 3 TO 5`、`CASE IS > 9`、`CASE ELSE`)
+  - `EXIT FOR/WHILE/DO/SUB/FUNCTION`
+- **SUB / FUNCTION**: 再帰呼び出しができます (深さは FUNCTION で約 19 段、SUB で約 40 段まで)。値は `RETURN 式` か `関数名 = 式` で返します。
+- **ラベル**: `名前:` か行番号を付けられ、`GOTO`、`GOSUB ... RETURN` で使えます。
+- **そのほかの命令**: `DATA` / `READ` / `RESTORE`、`INPUT`、`CONST`、`SWAP`、`RANDOMIZE`、`SLEEP`、`CLS`、`END`、`STOP`
+- **演算子**: `^`、`* /`、`\` (整数除算)、`MOD`、`+ -`、`&` (文字列として連結)、比較、`NOT AND OR XOR`。真は -1、偽は 0 です。
+- **グラフィックス**:
+  - 命令: `GCLS`、`COLOR`、`PSET`、`LINE`、`BOX`、`CIRCLE`、`GPRINT`
+  - 色は `RGB(r,g,b)` か `"red"` などの名前で指定します。
+  - キー入力は `INKEY$`、`WAITKEY$`、`KEYDOWN("a")` で読みます。
+- **関数**: 数学 (`SIN` `SQR` `LOG` `ROUND` `RND` など)、文字列 (`LEFT$` `MID$` `INSTR` `STR$` `VAL` など)、`TIMER` `TICKS`
+- **エラー表示**: 行番号付きで「3 行目: 0 で割りました」のように表示します。
+
+インタプリタの中心部分 (`baslang.py`) は画面に依存しないので、ホストでテストできます (`tests/test_basic.py`)。
+
 ## 日本語表示
 
 Settings の「Language / 言語」で English / 日本語 を切り替えると、メニューや画面の表示がすぐに切り替わります。
@@ -281,7 +412,7 @@ python3 tools/devsim.py nc.app:main '2 F6 #500 @graph' dev_out
 tools/dev.sh push src/nc/apps/calc.py && tools/dev.sh reset
 tools/dev.sh clean                        # 上書き用のコピーを削除する
 # テスト
-for t in tests/test_*.py; do $M -X heapsize=8M $t; done   # bcd、式、ソルバ、グラフ、方程式・行列、統計
+for t in tests/test_*.py; do $M -X heapsize=8M $t; done   # bcd、式、ソルバ、グラフ、方程式・行列、統計、BASIC
 ```
 
 ディレクトリ構成:
@@ -291,7 +422,8 @@ firmware/            ボード定義 (CARD_GCALC)、C モジュール (ncore、b
 src/main.py          起動処理 (frozen)
 src/nc/              電卓本体: hal (LCD/キーボード)、gfx、ui、keymap、calc/ (式エンジン、数値計算)、apps/
 src/cardgcalc.py ...   スクリプト用 API (cardgcalc, turtle, matplotlib)
-tools/               フォント変換 (mkfont, mkfont_jp)、翻訳表の生成 (mklang)、シミュレータ、開発用スクリプト
+plugins/basic/       サンプルプラグイン (BASIC インタプリタ)
+tools/               フォント変換 (mkfont, mkfont_jp)、翻訳表の生成 (mklang)、シミュレータ、開発用スクリプト、プラグインの転送 (plugin.sh)
 lang/                翻訳表 (英語<TAB>日本語)
 tests/               ホスト用テスト
 ```

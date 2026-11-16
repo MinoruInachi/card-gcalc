@@ -1,4 +1,5 @@
-# Full-screen Python code editor.
+# Full-screen code editor (Python by default; plugins can pass a Syntax
+# for another language).
 #
 #   fn+; , . /    cursor          fn+- / fn+=   home / end of line
 #   fn+[ / fn+]   page up / down  Tab / shift+Tab   indent / dedent
@@ -112,9 +113,31 @@ def highlight(line, in_str=None):
     return runs, None
 
 
+class Syntax:
+    """Language support for the editor.  Plugins pass an object with the
+    same attributes to edit(path, syntax) for another language:
+      highlight(line, state) -> (runs, state)  runs: [(text, colour), ...]
+      multiline   True if state can carry across lines (else state is None)
+      snippets    {key: text} inserted by opt+key
+      indent_after(line) -> True to indent the line after `line`"""
+
+    multiline = True
+    snippets = SNIPPETS
+
+    def highlight(self, line, state=None):
+        return highlight(line, state)
+
+    def indent_after(self, line):
+        return line.rstrip().endswith(":")
+
+
+PYTHON = Syntax()
+
+
 class Editor:
-    def __init__(self, path, text=None):
+    def __init__(self, path, text=None, syntax=None):
         self.path = path
+        self.syn = syntax or PYTHON
         if text is None:
             try:
                 with open(path) as f:
@@ -171,7 +194,7 @@ class Editor:
         before = l[: self.cx]
         after = l[self.cx:]
         ind = len(before) - len(before.lstrip(" "))
-        if before.rstrip().endswith(":"):
+        if self.syn.indent_after(before):
             ind += 4
         after = after.lstrip(" ")
         self._change(self.cy, 1, [before.rstrip() if before.strip() else before, " " * ind + after])
@@ -286,6 +309,12 @@ class Editor:
     # ---- drawing ----------------------------------------------------------
     def _str_state(self, upto):
         st = None
+        if not self.syn.multiline:
+            return st
+        if self.syn is not PYTHON:
+            for i in range(upto):
+                _, st = self.syn.highlight(self.lines[i], st)
+            return st
         for i in range(upto):
             l = self.lines[i]
             if '"""' not in l and "'''" not in l and st is None:
@@ -325,7 +354,7 @@ class Editor:
                 fb.fill_rect(gx - 1, y - 1, ui.W - gx + 1, ROWH, gfx.PANEL)
             num = "%d" % (i + 1)
             f.text(num[-GUT:], gx - 3 - f.width(num[-GUT:]), y, gfx.ACCENT if i == self.cy else gfx.DIM)
-            runs, st = highlight(self.lines[i], st)
+            runs, st = self.syn.highlight(self.lines[i], st)
             # draw runs starting at character `left`; widths are measured so
             # Japanese (8px) characters in strings/comments render correctly
             x = gx
@@ -369,9 +398,10 @@ class Editor:
             "opt snippets:",
         ]
         lines = [T(l) for l in lines]
-        ks = sorted(SNIPPETS)
+        sn = self.syn.snippets
+        ks = sorted(sn)
         for i in range(0, len(ks), 3):
-            lines.append("  " + "  ".join("%s %s" % (k, SNIPPETS[k].strip()) for k in ks[i: i + 3]))
+            lines.append("  " + "  ".join("%s %s" % (k, sn[k].strip()) for k in ks[i: i + 3]))
         ui.text_view("Editor keys", lines)
 
     # ---- main loop --------------------------------------------------------
@@ -413,8 +443,8 @@ class Editor:
                 self._last_cut = cut
                 continue
             self._last_cut = False
-            if k.mods & OPT and k.base in SNIPPETS:
-                self.insert(SNIPPETS[k.base])
+            if k.mods & OPT and k.base in self.syn.snippets:
+                self.insert(self.syn.snippets[k.base])
                 continue
             if k.mods & FN and k.base == "h":
                 self.help()
@@ -475,12 +505,13 @@ class Editor:
                 self.insert(key)
 
 
-def edit(path):
-    """Open path in the editor; returns 'run' if the user asked to run it."""
+def edit(path, syntax=None):
+    """Open path in the editor; returns 'run' if the user asked to run it.
+    syntax: a Syntax-like object for other languages (see Syntax)."""
     import gc
 
     gc.collect()
-    e = Editor(path)
+    e = Editor(path, syntax=syntax)
     r = e.run()
     del e
     gc.collect()

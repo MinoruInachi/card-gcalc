@@ -128,3 +128,15 @@ Graphing calculator for	グラフ電卓
 Fonts: X11 misc-fixed (public domain)	フォント: X11 misc-fixed (PD)
 Japanese: k8x12 (Num Kadoma)	日本語: k8x12 (門真なむ)
 CPU %d MHz	CPU %d MHz
+# --- plugins (src/nc/plugins.py, Settings > Plugins, Files)
+Plugins	プラグイン
+Plugin	プラグイン
+Enable	有効にする
+Disable	無効にする
+Folder	フォルダ
+Module	モジュール
+Opens	開くファイル
+needs newer firmware	新しいファームウェアが必要
+No plugins installed.	プラグインがありません。
+Delete plugin?	プラグインを削除しますか?
+Open with	開くアプリ

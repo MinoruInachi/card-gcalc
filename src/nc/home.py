@@ -1,7 +1,7 @@
 # Home screen: icon grid launcher.
 import gc
 import sys
-from nc import hal, gfx, ui, icons
+from nc import hal, gfx, ui, icons, plugins
 from nc.i18n import T
 from nc.hal import rgb, UP, DOWN, LEFT, RIGHT, ENTER, ESC
 
@@ -22,6 +22,24 @@ APPS = (
     ("settings", "Settings", "nc.apps.settings", rgb(110, 116, 130)),
 )
 
+_apps = APPS  # built-in apps followed by the enabled plugins
+
+
+def refresh():
+    """Rebuild the app list (plugins may have been added or removed)."""
+    global _apps
+    try:
+        ps = plugins.scan()
+    except Exception as e:
+        print("plugins:", e)
+        ps = ()
+    _apps = APPS + tuple((None, None, m, None) for m in ps)
+
+
+def _label(a):
+    return T(a[1]) if a[1] is not None else plugins.label(a[2])
+
+
 COLS = 4
 TW = 60
 TH = 56
@@ -35,17 +53,21 @@ def draw(sel, top_row):
     for r in range(ROWS_VIS):
         for c in range(COLS):
             i = (top_row + r) * COLS + c
-            if i >= len(APPS):
+            if i >= len(_apps):
                 break
-            icon, label, _m, col = APPS[i]
-            label = T(label)
+            a = _apps[i]
+            label = _label(a)
             x = c * TW + (TW - icons.S) // 2
             y = ui.TOP + 4 + r * TH
-            icons.draw(icon, x, y, col, i == sel)
+            if a[1] is None:
+                plugins.draw_icon(a[2], x, y, i == sel)
+            else:
+                icons.draw(a[0], x, y, a[3], i == sel)
+            label = f.clip(label, TW - 2)
             lab_col = gfx.YELLOW if i == sel else gfx.FG
             f.text(label, c * TW + (TW - f.width(label)) // 2, y + icons.S + 5, lab_col)
     # scroll indicator
-    nrows = (len(APPS) + COLS - 1) // COLS
+    nrows = (len(_apps) + COLS - 1) // COLS
     if nrows > ROWS_VIS:
         fb = gfx.fb()
         h = ui.BOT - ui.TOP
@@ -54,13 +76,18 @@ def draw(sel, top_row):
         fb.fill_rect(hal.W - 2, sy, 2, sh, gfx.DIM)
     fb = gfx.fb()
     fb.fill_rect(0, ui.BOT, hal.W, hal.H - ui.BOT, gfx.PANEL)
-    hint = "%d %s   %s" % (sel + 1, T(APPS[sel][1]), T(";,./ move  Enter open  fn+h keys"))
+    hint = "%d %s   %s" % (sel + 1, _label(_apps[sel]), T(";,./ move  Enter open  fn+h keys"))
     f.text(hint, 3, ui.BOT + 2, gfx.DIM)
     gfx.show()
 
 
 def launch(i):
-    mod_name = APPS[i][2]
+    a = _apps[i]
+    if a[1] is None:
+        plugins.launch(a[2])
+        refresh()
+        return
+    mod_name = a[2]
     gc.collect()
     try:
         __import__(mod_name)
@@ -74,6 +101,7 @@ def launch(i):
         except KeyError:
             pass
         hal.keyboard.clear_mods()
+        refresh()
         gc.collect()
 
 
@@ -92,10 +120,12 @@ _sel = 0
 
 def run():
     global _sel
+    refresh()
     sel = _sel
     top = 0
-    n = len(APPS)
     while True:
+        n = len(_apps)
+        sel = min(sel, n - 1)
         row = sel // COLS
         if row < top:
             top = row
