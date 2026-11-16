@@ -5,8 +5,8 @@
 # Data may be lists, tuples, ranges or ulab ndarrays (1-D, or 2-D for plot:
 # each column is drawn as a separate line, as in matplotlib).
 import math
-from nc import hal, gfx
-from nc import runner as _r
+from cardgcalc import hal, gfx
+from cardgcalc import runner as _r
 
 _COLS = {
     "b": (31, 119, 180), "blue": (31, 119, 180), "r": (220, 40, 40), "red": (220, 40, 40),
@@ -242,6 +242,7 @@ def _nice_step(span, n=5):
 
 
 def show():
+    hal.init()  # no-op when the calculator already did it (REPL / mpremote)
     fb = hal.display.fb
     _r.mark_dirty()
     W = hal.W

@@ -13,8 +13,9 @@
 # mounted).
 import gc
 import os
-from nc import hal, gfx, ui, storage, runner, plugins, settings
-from nc.console import Console
+import cardgcalc
+from cardgcalc import hal, gfx, ui, storage, runner, plugins, settings
+from cardgcalc.console import Console
 import baslang
 from baslang import Basic, BasicError
 
@@ -195,7 +196,7 @@ class Syntax:
     _OPEN = ("FOR", "WHILE", "DO", "SUB", "FUNCTION", "SELECT", "CASE", "ELSE", "ELSEIF")
 
     def __init__(self, funcs):
-        from nc import editor as E
+        from cardgcalc import editor as E
 
         self.funcs = funcs
         self.C = (E.C_KW, E.C_BI, E.C_STR, E.C_NUM, E.C_COM, E.C_OP, E.C_TXT)
@@ -258,10 +259,7 @@ class Syntax:
 # ---- screen / keyboard I/O ------------------------------------------------------
 class ScreenIO:
     def __init__(self, con):
-        import cardgcalc
-
         self.con = con
-        self.nc = cardgcalc
         # Polled in loops for the break key.  Not needed on the device when
         # the firmware raises KeyboardInterrupt asynchronously (ncore).
         self.check = None if hal.IS_DEVICE and runner._kbd_interrupt else runner.check
@@ -282,44 +280,44 @@ class ScreenIO:
         self.con.draw()
 
     def sleep(self, s):
-        self.nc.sleep(s)
+        cardgcalc.sleep(s)
 
     def inkey(self):
-        return self.nc.get_key() or ""
+        return cardgcalc.get_key() or ""
 
     def waitkey(self):
-        return self.nc.wait_key()
+        return cardgcalc.wait_key()
 
     def keydown(self, k):
-        return self.nc.key_down(k)
+        return cardgcalc.key_down(k)
 
     def rgb(self, r, g, b):
-        return self.nc.color(r, g, b)
+        return cardgcalc.color(r, g, b)
 
     def _c(self, c, d):
         return d if c is None else c
 
     def gcls(self, c):
-        self.nc.cls(self._c(c, self.nc.BLACK))
+        cardgcalc.cls(self._c(c, cardgcalc.BLACK))
 
     def pset(self, x, y, c):
-        self.nc.pixel(x, y, self._c(c, self.nc.WHITE))
+        cardgcalc.pixel(x, y, self._c(c, cardgcalc.WHITE))
 
     def line(self, x1, y1, x2, y2, c):
-        self.nc.line(x1, y1, x2, y2, self._c(c, self.nc.WHITE))
+        cardgcalc.line(x1, y1, x2, y2, self._c(c, cardgcalc.WHITE))
 
     def box(self, x, y, w, h, c, fill):
-        c = self._c(c, self.nc.WHITE)
+        c = self._c(c, cardgcalc.WHITE)
         if fill:
-            self.nc.fill_rect(x, y, w, h, c)
+            cardgcalc.fill_rect(x, y, w, h, c)
         else:
-            self.nc.rect(x, y, w, h, c)
+            cardgcalc.rect(x, y, w, h, c)
 
     def circle(self, x, y, r, c, fill):
-        self.nc.circle(x, y, r, self._c(c, self.nc.WHITE), bool(fill))
+        cardgcalc.circle(x, y, r, self._c(c, cardgcalc.WHITE), bool(fill))
 
     def gprint(self, x, y, s, c):
-        self.nc.text(baslang.tostr(s), x, y, self._c(c, self.nc.WHITE))
+        cardgcalc.text(baslang.tostr(s), x, y, self._c(c, cardgcalc.WHITE))
 
 
 # ---- program files ------------------------------------------------------------------
@@ -460,7 +458,7 @@ class App:
         return err
 
     def edit(self, path):
-        from nc import editor
+        from cardgcalc import editor
 
         self.path = path
         self.title()

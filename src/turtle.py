@@ -1,8 +1,8 @@
 # turtle: classic turtle graphics on the card-gcalc screen.
 # Origin at the screen centre, y up, heading 0 = east, angles in degrees.
 import math
-from nc import hal, gfx
-from nc import runner as _r
+from cardgcalc import hal, gfx
+from cardgcalc import runner as _r
 
 _COLORS = {
     "black": (0, 0, 0), "white": (255, 255, 255), "red": (255, 0, 0), "green": (0, 180, 0),
@@ -36,6 +36,7 @@ def _rgb(c):
 
 
 def reset():
+    hal.init()  # no-op when the calculator already did it (REPL / mpremote)
     _t.x = 0.0
     _t.y = 0.0
     _t.h = 0.0

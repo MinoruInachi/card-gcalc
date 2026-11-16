@@ -9,7 +9,7 @@ import sys
 def _safe_mode():
     import time
     from machine import Pin
-    from nc import hal
+    from cardgcalc import hal
 
     g0 = Pin(0, Pin.IN, Pin.PULL_UP)
     t0 = time.ticks_ms()
@@ -24,7 +24,7 @@ def _safe_mode():
 
 
 def _splash(msg=None):
-    from nc import hal, gfx
+    from cardgcalc import hal, gfx
 
     gfx.fill(gfx.BG)
     f = gfx.font("large")
@@ -32,7 +32,7 @@ def _splash(msg=None):
     f.text(t, (hal.W - f.width(t)) // 2, 44, gfx.ACCENT)
     s = gfx.font("normal")
     try:
-        from nc.i18n import T
+        from cardgcalc.i18n import T
     except Exception:
         T = str
     sub = T(msg or "graphing calculator")
@@ -41,7 +41,7 @@ def _splash(msg=None):
 
 
 def _boot():
-    from nc import hal
+    from cardgcalc import hal
 
     hal.init()
     _splash()
@@ -56,7 +56,7 @@ def _boot():
         return
     except OSError:
         pass
-    from nc import app
+    from cardgcalc import app
 
     app.main()
 
@@ -69,7 +69,7 @@ except Exception as e:
     sys.print_exception(e)
     try:
         import io
-        from nc import ui
+        from cardgcalc import ui
 
         buf = io.StringIO()
         sys.print_exception(e, buf)

@@ -2,7 +2,7 @@
 """Convert the k8x12 Japanese bitmap font (BDF, Unicode) into a card-gcalc
 font module that stays in flash when frozen.
 
-Output module (src/nc/fonts/jp8x12.py):
+Output module (src/cardgcalc/fonts/jp8x12.py):
     W, H   glyph cell (8 x 12)
     N      number of glyphs
     CODES  bytes: big-endian uint16 code points, sorted (binary search)
@@ -15,7 +15,7 @@ permission is granted to use, copy, and distribute them, with or without
 modification, either commercially or noncommercially."
 https://littlelimit.net/k8x12.htm
 
-Usage: tools/mkfont_jp.py k8x12L.bdf src/nc/fonts/jp8x12.py
+Usage: tools/mkfont_jp.py k8x12L.bdf src/cardgcalc/fonts/jp8x12.py
 """
 import sys
 

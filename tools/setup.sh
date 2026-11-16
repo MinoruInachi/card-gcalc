@@ -5,6 +5,9 @@
 set -e
 cd "$(dirname "$0")/.."
 git submodule update --init deps/micropython deps/ulab
+# Local MicroPython patches (also needed by the unix port: comparisons of
+# decimal numbers, long command-line arguments for the simulator)
+firmware/patches/apply.sh
 make -C deps/micropython/mpy-cross -j8
 make -C deps/micropython/ports/unix submodules
 # C modules for the unix port: bcd (decimal numbers) and ulab

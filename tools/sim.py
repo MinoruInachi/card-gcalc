@@ -14,7 +14,7 @@ import sys
 
 if sys.platform != "esp32":
     sys.path.insert(0, "src")
-from nc import hal
+from cardgcalc import hal
 
 OUT = "sim_out"
 _shot_n = [0]
@@ -148,7 +148,7 @@ def _idle():
 
 def main():
     global OUT
-    target = sys.argv[1] if len(sys.argv) > 1 else "nc.app:main"
+    target = sys.argv[1] if len(sys.argv) > 1 else "cardgcalc.app:main"
     script = sys.argv[2] if len(sys.argv) > 2 else ""
     if script.startswith("@@"):
         # @@path : read the key script from a file (argv length is limited)
@@ -166,7 +166,7 @@ def main():
                 _idle()
 
         hal.add_idle_hook(_dev_idle)
-    from nc import storage
+    from cardgcalc import storage
 
     storage.ensure_dirs()
     mod, _, fn = target.partition(":")

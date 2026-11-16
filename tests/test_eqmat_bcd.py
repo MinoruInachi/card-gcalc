@@ -2,8 +2,8 @@
 import sys
 sys.path.insert(0, "src")
 from bcd import D
-from nc.calc import linalg, poly, numfmt
-from nc.calc.dec import DC
+from cardgcalc.calc import linalg, poly, numfmt
+from cardgcalc.calc.dec import DC
 
 fails = 0
 

@@ -1,6 +1,6 @@
 # Sim helpers for fork C tests: run example scripts directly.
-from nc import runner, storage
-from nc.apps import python as P
+from cardgcalc import runner, storage
+from cardgcalc.apps import python as P
 
 
 def _run(name):

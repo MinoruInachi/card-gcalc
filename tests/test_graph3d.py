@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(0, "src")
 from bcd import D
-from nc.apps import graph3d as g3
+from cardgcalc.apps import graph3d as g3
 
 fails = 0
 
@@ -87,7 +87,7 @@ g3._data["graphs"] = [
     tpl("sphere", "fac", a=0, b=0, c=0, r=2),
     tpl("line", "pv", x0=0, y0=0, z0=0, l=1, m=1, n=1),
 ]
-from nc import state
+from cardgcalc import state
 
 box = g3.Box(g3._data["view"])
 ctx = state.ctx()

@@ -1,4 +1,4 @@
-# Graph / Table (src/nc/apps/graph.py, table.py).  English<TAB>Japanese
+# Graph / Table (src/cardgcalc/apps/graph.py, table.py).  English<TAB>Japanese
 # Graph, Table: see ja_core.tsv
 # --- soft keys (<= 4 full-width chars)
 Trace	トレース
@@ -64,3 +64,5 @@ Clear %s?	%s を消去しますか?
 Table start	数表の開始値
 Table step	数表の刻み
 Step must not be 0	刻みに 0 は指定できません
+y at x: x =	xでのy値: x =
+x at y: y =	yでのx値: y =

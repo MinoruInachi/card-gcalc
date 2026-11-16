@@ -1,7 +1,7 @@
 import sys
 sys.path.insert(0, "src")
-from nc.calc.expr import Context, translate, CalcError
-from nc.calc import numfmt
+from cardgcalc.calc.expr import Context, translate, CalcError
+from cardgcalc.calc import numfmt
 
 ctx = Context()
 fails = 0

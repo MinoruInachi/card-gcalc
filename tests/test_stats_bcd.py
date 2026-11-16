@@ -3,7 +3,7 @@ import sys
 sys.path.insert(0, "src")
 import bcd
 from bcd import D
-from nc.calc import statlib, numfmt
+from cardgcalc.calc import statlib, numfmt
 
 fails = 0
 

@@ -165,3 +165,6 @@ Invalid HEX number	不正な16進数
 Invalid OCT number	不正な8進数
 Invalid BIN number	不正な2進数
 Negative shift	負のシフト量
+σ must be >0	σ は 0 より大きくしてください
+λ must be >0	λ は 0 より大きくしてください
+0<area<1	面積は 0 と 1 の間にしてください

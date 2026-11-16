@@ -1,6 +1,6 @@
 import sys, math
 sys.path.insert(0, "src")
-from nc.calc import linalg, poly, statlib, numfmt
+from cardgcalc.calc import linalg, poly, statlib, numfmt
 fails = 0
 def chk(name, got, want, tol=1e-9):
     global fails
@@ -69,7 +69,7 @@ chk("bincdf", statlib.binom_cdf(3, 10, 0.5), 0.171875)
 chk("poi", statlib.poisson_pdf(2, 3), 0.2240418077, 1e-8)
 print("FAILS:", fails)
 
-from nc.apps.basen import Machine, BaseError
+from cardgcalc.apps.basen import Machine, BaseError
 m = Machine(32, True)
 chk("b add", m.evaluate("1+2*3", 10), 7)
 chk("b hex", m.evaluate("FF+1", 16), 256)

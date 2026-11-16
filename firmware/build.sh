@@ -8,12 +8,7 @@ MPY="$ROOT/deps/micropython"
 : "${IDF_PATH:=/Volumes/bufext/esp/v5.5.4/esp-idf}"
 . "$IDF_PATH/export.sh" >/dev/null 2>&1
 # Apply local MicroPython patches (idempotent).
-for p in "$HERE"/patches/*.patch; do
-  if git -C "$MPY" apply --check -R "$p" 2>/dev/null; then
-    continue  # already applied
-  fi
-  git -C "$MPY" apply "$p" && echo "applied $(basename "$p")"
-done
+"$HERE/patches/apply.sh"
 make -C "$MPY/mpy-cross" -j8 >/dev/null
 cd "$MPY/ports/esp32"
 # Frozen modules are not regenerated when a source file is deleted, so drop

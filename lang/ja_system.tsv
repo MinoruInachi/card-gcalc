@@ -116,7 +116,6 @@ Memory & storage	メモリと容量
 About	バージョン情報
 Reset all data	全データ初期化
 Reset all data?	全データを初期化しますか?
-Settings, variables, history	設定・変数・履歴
 All data cleared.	全データを消去しました。
 RAM  free %s  used %s	RAM  空き %s  使用 %s
 Flash fs  %s free / %s	本体    空き %s / %s
@@ -128,7 +127,7 @@ Graphing calculator for	グラフ電卓
 Fonts: X11 misc-fixed (public domain)	フォント: X11 misc-fixed (PD)
 Japanese: k8x12 (Num Kadoma)	日本語: k8x12 (門真なむ)
 CPU %d MHz	CPU %d MHz
-# --- plugins (src/nc/plugins.py, Settings > Plugins, Files)
+# --- plugins (src/cardgcalc/plugins.py, Settings > Plugins, Files)
 Plugins	プラグイン
 Plugin	プラグイン
 Enable	有効にする
@@ -140,3 +139,6 @@ needs newer firmware	新しいファームウェアが必要
 No plugins installed.	プラグインがありません。
 Delete plugin?	プラグインを削除しますか?
 Open with	開くアプリ
+Cannot paste a folder into itself	フォルダ自身の中には貼り付けられません
+Settings, variables, functions,	設定・変数・関数・
+lists, matrices, history	リスト・行列・履歴

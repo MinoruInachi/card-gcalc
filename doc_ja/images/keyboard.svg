@@ -1,0 +1,233 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1042" height="496" viewBox="0 0 1042 496" font-family="Menlo, Consolas, 'DejaVu Sans Mono', 'Hiragino Sans', 'Noto Sans CJK JP', monospace">
+<rect width="100%" height="100%" rx="12" fill="#f4f5f7"/>
+<text x="20" y="32" font-size="18" font-weight="bold" fill="#222">Cardputer-Adv のキーボード: fn / opt / alt と組み合わせたときの働き</text>
+<rect x="20" y="56" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="53" y="98" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">`</text>
+<rect x="23" y="59" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="53" y="70" font-size="11" fill="#fff" text-anchor="middle">ESC</text>
+<rect x="92" y="56" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="125" y="98" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">1</text>
+<rect x="95" y="59" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="125" y="70" font-size="11" fill="#fff" text-anchor="middle">F1</text>
+<text x="97" y="117" font-size="11" fill="#ffb366">⁻¹</text>
+<text x="97" y="130" font-size="11" fill="#f08cf0">fact(</text>
+<rect x="164" y="56" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="197" y="98" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">2</text>
+<rect x="167" y="59" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="197" y="70" font-size="11" fill="#fff" text-anchor="middle">F2</text>
+<text x="169" y="117" font-size="11" fill="#ffb366">²</text>
+<text x="169" y="130" font-size="11" fill="#f08cf0">³</text>
+<rect x="236" y="56" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="269" y="98" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">3</text>
+<rect x="239" y="59" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="269" y="70" font-size="11" fill="#fff" text-anchor="middle">F3</text>
+<text x="241" y="117" font-size="11" fill="#ffb366">³</text>
+<text x="241" y="130" font-size="11" fill="#f08cf0">∛(</text>
+<rect x="308" y="56" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="341" y="98" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">4</text>
+<rect x="311" y="59" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="341" y="70" font-size="11" fill="#fff" text-anchor="middle">F4</text>
+<rect x="380" y="56" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="413" y="98" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">5</text>
+<rect x="383" y="59" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="413" y="70" font-size="11" fill="#fff" text-anchor="middle">F5</text>
+<text x="385" y="117" font-size="11" fill="#ffb366">%</text>
+<rect x="452" y="56" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="485" y="98" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">6</text>
+<rect x="455" y="59" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="485" y="70" font-size="11" fill="#fff" text-anchor="middle">F6</text>
+<text x="457" y="117" font-size="11" fill="#ffb366">^</text>
+<rect x="524" y="56" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="557" y="98" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">7</text>
+<rect x="527" y="59" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="557" y="70" font-size="11" fill="#fff" text-anchor="middle">F7</text>
+<rect x="596" y="56" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="629" y="98" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">8</text>
+<rect x="599" y="59" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="629" y="70" font-size="11" fill="#fff" text-anchor="middle">F8</text>
+<text x="601" y="117" font-size="11" fill="#ffb366">×</text>
+<text x="601" y="130" font-size="11" fill="#f08cf0">∞</text>
+<rect x="668" y="56" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="701" y="98" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">9</text>
+<rect x="671" y="59" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="701" y="70" font-size="11" fill="#fff" text-anchor="middle">F9</text>
+<text x="673" y="117" font-size="11" fill="#ffb366">(</text>
+<rect x="740" y="56" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="773" y="98" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">0</text>
+<rect x="743" y="59" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="773" y="70" font-size="11" fill="#fff" text-anchor="middle">F10</text>
+<text x="745" y="117" font-size="11" fill="#ffb366">E</text>
+<rect x="812" y="56" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="845" y="98" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">-</text>
+<rect x="815" y="59" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="845" y="70" font-size="11" fill="#fff" text-anchor="middle">Home</text>
+<rect x="884" y="56" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="917" y="98" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">=</text>
+<rect x="887" y="59" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="917" y="70" font-size="11" fill="#fff" text-anchor="middle">End</text>
+<text x="889" y="117" font-size="11" fill="#ffb366">→</text>
+<rect x="956" y="56" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="989" y="98" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="bold">BS</text>
+<rect x="959" y="59" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="989" y="70" font-size="11" fill="#fff" text-anchor="middle">DEL</text>
+<rect x="20" y="142" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="53" y="189" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="bold">tab</text>
+<rect x="92" y="142" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="125" y="184" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">q</text>
+<text x="97" y="203" font-size="11" fill="#ffb366">√(</text>
+<text x="97" y="216" font-size="11" fill="#f08cf0">sqrt(</text>
+<rect x="164" y="142" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="197" y="184" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">w</text>
+<text x="169" y="203" font-size="11" fill="#ffb366">root(</text>
+<text x="169" y="216" font-size="11" fill="#f08cf0">fpart(</text>
+<rect x="236" y="142" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="269" y="184" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">e</text>
+<text x="241" y="203" font-size="11" fill="#ffb366">e^(</text>
+<text x="241" y="216" font-size="11" fill="#f08cf0">exp(</text>
+<rect x="308" y="142" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="341" y="184" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">r</text>
+<text x="313" y="203" font-size="11" fill="#ffb366">∛(</text>
+<text x="313" y="216" font-size="11" fill="#f08cf0">round(</text>
+<rect x="380" y="142" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="413" y="184" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">t</text>
+<text x="385" y="203" font-size="11" fill="#ffb366">tan(</text>
+<text x="385" y="216" font-size="11" fill="#f08cf0">tan⁻¹(</text>
+<rect x="452" y="142" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="485" y="184" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">y</text>
+<text x="457" y="203" font-size="11" fill="#ffb366">y</text>
+<rect x="524" y="142" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="557" y="184" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">u</text>
+<text x="529" y="203" font-size="11" fill="#ffb366">10^(</text>
+<text x="529" y="216" font-size="11" fill="#f08cf0">rad(</text>
+<rect x="596" y="142" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="629" y="184" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">i</text>
+<text x="601" y="203" font-size="11" fill="#ffb366">i</text>
+<text x="601" y="216" font-size="11" fill="#f08cf0">int(</text>
+<rect x="668" y="142" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="701" y="184" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">o</text>
+<text x="673" y="203" font-size="11" fill="#ffb366">∏(</text>
+<text x="673" y="216" font-size="11" fill="#f08cf0">rand()</text>
+<rect x="740" y="142" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="773" y="184" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">p</text>
+<text x="745" y="203" font-size="11" fill="#ffb366">π</text>
+<text x="745" y="216" font-size="11" fill="#f08cf0">isprime(</text>
+<rect x="812" y="142" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="845" y="184" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">[</text>
+<rect x="815" y="145" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="845" y="156" font-size="11" fill="#fff" text-anchor="middle">PgUp</text>
+<rect x="884" y="142" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="917" y="184" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">]</text>
+<rect x="887" y="145" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="917" y="156" font-size="11" fill="#fff" text-anchor="middle">PgDn</text>
+<rect x="956" y="142" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="989" y="189" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">\</text>
+<rect x="20" y="228" width="66" height="80" rx="8" fill="#2e9e5b"/>
+<text x="53" y="275" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="bold">fn</text>
+<rect x="92" y="228" width="66" height="80" rx="8" fill="#4a5060"/>
+<text x="125" y="275" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="bold">shift</text>
+<rect x="164" y="228" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="197" y="270" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">a</text>
+<text x="169" y="289" font-size="11" fill="#ffb366">Ans</text>
+<text x="169" y="302" font-size="11" fill="#f08cf0">atan2(</text>
+<rect x="236" y="228" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="269" y="270" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">s</text>
+<text x="241" y="289" font-size="11" fill="#ffb366">sin(</text>
+<text x="241" y="302" font-size="11" fill="#f08cf0">sin⁻¹(</text>
+<rect x="308" y="228" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="341" y="270" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">d</text>
+<text x="313" y="289" font-size="11" fill="#ffb366">d/dx(</text>
+<text x="313" y="302" font-size="11" fill="#f08cf0">deg(</text>
+<rect x="380" y="228" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="413" y="270" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">f</text>
+<text x="385" y="289" font-size="11" fill="#ffb366">!</text>
+<text x="385" y="302" font-size="11" fill="#f08cf0">floor(</text>
+<rect x="452" y="228" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="485" y="270" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">g</text>
+<text x="457" y="289" font-size="11" fill="#ffb366">log(</text>
+<text x="457" y="302" font-size="11" fill="#f08cf0">log(</text>
+<rect x="524" y="228" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="557" y="270" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">h</text>
+<rect x="527" y="231" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="557" y="242" font-size="11" fill="#fff" text-anchor="middle">help</text>
+<text x="529" y="289" font-size="11" fill="#ffb366">θ</text>
+<text x="529" y="302" font-size="11" fill="#f08cf0">sinh(</text>
+<rect x="596" y="228" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="629" y="270" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">j</text>
+<text x="601" y="289" font-size="11" fill="#ffb366">∫(</text>
+<text x="601" y="302" font-size="11" fill="#f08cf0">cosh(</text>
+<rect x="668" y="228" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="701" y="270" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">k</text>
+<text x="673" y="289" font-size="11" fill="#ffb366">k</text>
+<text x="673" y="302" font-size="11" fill="#f08cf0">tanh(</text>
+<rect x="740" y="228" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="773" y="270" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">l</text>
+<text x="745" y="289" font-size="11" fill="#ffb366">ln(</text>
+<text x="745" y="302" font-size="11" fill="#f08cf0">log2(</text>
+<rect x="812" y="228" width="66" height="80" rx="8" fill="#2f5d8a"/>
+<text x="845" y="270" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">;</text>
+<rect x="815" y="231" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="845" y="242" font-size="11" fill="#fff" text-anchor="middle">↑</text>
+<rect x="884" y="228" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="917" y="275" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">&#x27;</text>
+<rect x="956" y="228" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="989" y="275" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="bold">enter</text>
+<rect x="20" y="314" width="66" height="80" rx="8" fill="#4a5060"/>
+<text x="53" y="361" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="bold">ctrl</text>
+<rect x="92" y="314" width="66" height="80" rx="8" fill="#d9822b"/>
+<text x="125" y="361" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="bold">opt</text>
+<rect x="164" y="314" width="66" height="80" rx="8" fill="#b03ab0"/>
+<text x="197" y="361" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="bold">alt</text>
+<rect x="236" y="314" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="269" y="356" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">z</text>
+<text x="241" y="375" font-size="11" fill="#ffb366">Σ(</text>
+<text x="241" y="388" font-size="11" fill="#f08cf0">randint(</text>
+<rect x="308" y="314" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="341" y="356" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">x</text>
+<text x="313" y="375" font-size="11" fill="#ffb366">x</text>
+<text x="313" y="388" font-size="11" fill="#f08cf0">max(</text>
+<rect x="380" y="314" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="413" y="356" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">c</text>
+<text x="385" y="375" font-size="11" fill="#ffb366">cos(</text>
+<text x="385" y="388" font-size="11" fill="#f08cf0">cos⁻¹(</text>
+<rect x="452" y="314" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="485" y="356" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">v</text>
+<text x="457" y="375" font-size="11" fill="#ffb366">solve(</text>
+<text x="457" y="388" font-size="11" fill="#f08cf0">lcm(</text>
+<rect x="524" y="314" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="557" y="356" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">b</text>
+<text x="529" y="375" font-size="11" fill="#ffb366">abs(</text>
+<text x="529" y="388" font-size="11" fill="#f08cf0">gcd(</text>
+<rect x="596" y="314" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="629" y="356" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">n</text>
+<text x="601" y="375" font-size="11" fill="#ffb366">nCr(</text>
+<text x="601" y="388" font-size="11" fill="#f08cf0">nPr(</text>
+<rect x="668" y="314" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="701" y="356" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">m</text>
+<text x="673" y="375" font-size="11" fill="#ffb366">mod(</text>
+<text x="673" y="388" font-size="11" fill="#f08cf0">min(</text>
+<rect x="740" y="314" width="66" height="80" rx="8" fill="#2f5d8a"/>
+<text x="773" y="356" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">,</text>
+<rect x="743" y="317" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="773" y="328" font-size="11" fill="#fff" text-anchor="middle">←</text>
+<rect x="812" y="314" width="66" height="80" rx="8" fill="#2f5d8a"/>
+<text x="845" y="356" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">.</text>
+<rect x="815" y="317" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="845" y="328" font-size="11" fill="#fff" text-anchor="middle">↓</text>
+<text x="817" y="375" font-size="11" fill="#ffb366">,</text>
+<rect x="884" y="314" width="66" height="80" rx="8" fill="#2f5d8a"/>
+<text x="917" y="356" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">/</text>
+<rect x="887" y="317" width="60" height="15" rx="3" fill="#2e9e5b"/>
+<text x="917" y="328" font-size="11" fill="#fff" text-anchor="middle">→</text>
+<text x="889" y="375" font-size="11" fill="#ffb366">÷</text>
+<rect x="956" y="314" width="66" height="80" rx="8" fill="#2b2f3a"/>
+<text x="989" y="361" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="bold">space</text>
+<rect x="20" y="418" width="16" height="16" rx="3" fill="#2e9e5b"/>
+<text x="42" y="431" font-size="13" fill="#222">fn + キー</text>
+<rect x="350" y="418" width="16" height="16" rx="3" fill="#d9822b"/>
+<text x="372" y="431" font-size="13" fill="#222">opt + キー (数式入力)</text>
+<rect x="20" y="442" width="16" height="16" rx="3" fill="#b03ab0"/>
+<text x="42" y="455" font-size="13" fill="#222">alt + キー (数式入力)</text>
+<rect x="350" y="442" width="16" height="16" rx="3" fill="#2f5d8a"/>
+<text x="372" y="455" font-size="13" fill="#222">矢印: fn + ; . , /  (文字を入力しない画面では単独でも可)</text>
+<text x="20" y="484" font-size="13" fill="#222">修飾キーを単独で押して離すと次の 1 キーだけ有効 (ラッチ)、もう一度でロック、さらに押すと解除。</text>
+</svg>

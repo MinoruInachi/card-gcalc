@@ -2,16 +2,16 @@
 import sys
 sys.path.insert(0, "src")
 from bcd import D
-from nc import settings, funcs, state
-from nc.calc.dec import DC
+from cardgcalc import settings, funcs, state
+from cardgcalc.calc.dec import DC
 
 settings.get("angle")
 settings._s["angle"] = "rad"
 settings._s["complex"] = False
 funcs._data = funcs._defaults()  # do not depend on saved files
 
-from nc.apps import graph as G
-from nc.apps import table as TB
+from cardgcalc.apps import graph as G
+from cardgcalc.apps import table as TB
 
 fails = 0
 
@@ -90,7 +90,7 @@ gv = G.GraphView()
 gv.p.compile_all()
 f0 = gv.p.fns[0]
 roots = gv.roots_of(f0)
-from nc.calc import numfmt
+from cardgcalc.calc import numfmt
 
 chk("roots", [numfmt.fmt(r) for r in roots], ["-1.414213562", "1.414213562"])
 mins = gv.extrema_of(f0, False)
@@ -111,7 +111,7 @@ def g(x):
 
 
 chk("isect", gv.roots_of(g), [D(-1), D(2)])
-from nc.calc import fn as F
+from cardgcalc.calc import fn as F
 
 chk("integ", numfmt.fmt(F.integ(G._raising(f1), D(0), D(3))), "4.5")
 d = F.deriv(G._raising(f0), D(3))

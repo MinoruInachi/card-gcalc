@@ -1,7 +1,7 @@
 #!/bin/sh
 # Development helpers for a device running the card-gcalc firmware.
 #
-#   tools/dev.sh push [files...]  copy src/nc (or given src/ files) to the device
+#   tools/dev.sh push [files...]  copy src/cardgcalc (or given src/ files) to the device
 #                                 filesystem; they override the frozen copies
 #   tools/dev.sh clean            remove the overriding copies (use frozen code)
 #   tools/dev.sh reset            soft-reset (restarts the calculator)
@@ -16,8 +16,8 @@ cmd=$1; shift || true
 case "$cmd" in
   push)
     if [ $# -eq 0 ]; then
-      $MP mkdir :/nc 2>/dev/null || true
-      $MP cp -r src/nc :/
+      $MP mkdir :/cardgcalc 2>/dev/null || true
+      $MP cp -r src/cardgcalc :/
     else
       for f in "$@"; do
         rel=${f#src/}
@@ -40,7 +40,7 @@ def rm(p):
             os.rmdir(p)
         else: os.remove(p)
     except OSError: pass
-rm('/nc')" ;;
+rm('/cardgcalc')" ;;
   reset) $MP soft-reset ;;
   repl) $MP repl ;;
   run) $MP run "$1" ;;
