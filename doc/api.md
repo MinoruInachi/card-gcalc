@@ -178,6 +178,8 @@ cardgcalc.wait_key()
 
 You can use the pins on the Grove port and the expansion header (EXT). See [GPIO](apps/gpio.md) for the pin layout.
 
+The Cardputer has no EXT header: there `PINS` is `(1, 2)`. G3–G6, G13 and G15 read its keyboard; using them from a script stops the keyboard until the device restarts.
+
 | API | Description |
 |---|---|
 | `G1` `G2` (Grove), `G3` `G4` `G5` `G6` `G13` `G15` (EXT), `PINS` | Pin number constants and a list of them |

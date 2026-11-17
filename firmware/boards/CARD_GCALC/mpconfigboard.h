@@ -1,13 +1,25 @@
-// card-gcalc: graphing calculator firmware for M5Stack Cardputer-Adv
+// card-gcalc: graphing calculator firmware for M5Stack Cardputer-Adv and
+// Cardputer.  The Cardputer build is the CARDPUTER variant
+// (mpconfigvariant_CARDPUTER.cmake), which defines CARDGCALC_CARDPUTER and
+// its own board name.
+#ifndef MICROPY_HW_BOARD_NAME
 #define MICROPY_HW_BOARD_NAME               "M5Stack Cardputer-Adv (card-gcalc)"
+#endif
 #define MICROPY_HW_MCU_NAME                 "ESP32S3"
 
-// The Cardputer-Adv uses the native USB-Serial/JTAG for the REPL.
+// The Cardputer(-Adv) uses the native USB-Serial/JTAG for the REPL.
 #define MICROPY_HW_ENABLE_UART_REPL         (0)
 
+#ifdef CARDGCALC_CARDPUTER
+// No internal I2C bus (G8/G9/G11 drive the keyboard's 74HC138): default
+// I2C(0) to the Grove port.
+#define MICROPY_HW_I2C0_SCL                 (1)
+#define MICROPY_HW_I2C0_SDA                 (2)
+#else
 // Internal I2C bus (keyboard TCA8418, ES8311 codec, BMI270 IMU).
 #define MICROPY_HW_I2C0_SCL                 (9)
 #define MICROPY_HW_I2C0_SDA                 (8)
+#endif
 
 // BLE is not used by the calculator (and NimBLE fails to build on IDF 5.5.4).
 #define MICROPY_PY_BLUETOOTH                (0)

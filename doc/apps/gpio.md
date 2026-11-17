@@ -35,6 +35,8 @@ Values are read again every 0.1 s, so inputs update while you watch.
 
 The other EXT pins are used inside the device (G40/G14/G39 by the SD card, G8/G9 by the internal I2C bus) and are not listed.
 
+The Cardputer has no EXT header. G3–G6, G13 and G15 read its keyboard, so only G1 and G2 are listed.
+
 ### Modes
 
 ![Mode menu](../images/gpio-mode.png)
@@ -69,7 +71,7 @@ The frequency and duty fields accept calculator expressions, so `2^10` or `100/3
 F4 (I2C) scans two buses and lists the addresses that answer:
 
 - **Grove (SDA=G2, SCL=G1)**, at 100 kHz. "no devices" if nothing answers. G1 and G2 are left as inputs after the scan.
-- **Internal (SDA=G8, SCL=G9)**: the built-in devices, such as the keyboard controller at 0x34.
+- **Internal (SDA=G8, SCL=G9)**: the built-in devices, such as the keyboard controller at 0x34. Cardputer-Adv only.
 
 Known addresses are labeled, for example 0x3C OLED, 0x76/0x77 BME280/BMP, 0x44 SHT3x, 0x38 AHT20, 0x29 VL53L0X/TCS, 0x48 ADS1115, 0x23 BH1750, 0x70 TCA9548A, 0x68/0x69 BMI270 IMU. The list opens in a viewer; ESC closes it. In the PC simulator the scan shows "n/a in the simulator".
 

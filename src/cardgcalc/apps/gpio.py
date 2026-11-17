@@ -1,4 +1,5 @@
-# GPIO: interactive pin panel for the Grove port and the EXT header.
+# GPIO: interactive pin panel for the Grove port and the EXT header
+# (Cardputer-Adv only).
 #
 #   ;/. (fn) select pin    Enter / F1  mode menu
 #   Space / F2  toggle OUT    +/- PWM duty ±5%   F3 PWM freq/duty
@@ -28,6 +29,9 @@ PINS = (
     (13, "EXT 12"),
     (15, "EXT 14"),
 )
+if hal.MODEL == "cardputer":
+    # The Cardputer has no EXT header: G3-G6/G13/G15 read its keyboard.
+    PINS = PINS[:2]
 MODES = ("-", "IN", "IN-PU", "IN-PD", "OUT", "ADC", "PWM")
 I2C_NAMES = {0x34: "TCA8418 keyboard", 0x18: "ES8311 audio", 0x68: "BMI270 IMU", 0x69: "BMI270 IMU",
              0x3C: "OLED", 0x76: "BME280/BMP", 0x77: "BME/BMP", 0x40: "INA219/SHT", 0x44: "SHT3x",

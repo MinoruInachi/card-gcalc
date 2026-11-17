@@ -101,7 +101,7 @@ A text view with:
 
 ### About
 
-Shows the firmware name and version (`card-gcalc 0.2`), "Graphing calculator for M5Stack Cardputer-Adv", the MicroPython version, the board name, the font credits and the CPU clock.
+Shows the firmware name and version (`card-gcalc 0.2`), "Graphing calculator for M5Stack Cardputer-Adv" (or "M5Stack Cardputer"), the MicroPython version, the board name, the font credits and the CPU clock.
 
 ### Reset all data
 

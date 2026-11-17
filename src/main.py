@@ -23,7 +23,7 @@ def _safe_mode():
     return False
 
 
-def _splash(msg=None):
+def _splash(msg=None, msg2=None):
     from cardgcalc import hal, gfx
 
     gfx.fill(gfx.BG)
@@ -37,13 +37,21 @@ def _splash(msg=None):
         T = str
     sub = T(msg or "graphing calculator")
     s.text(sub, (hal.W - s.width(sub)) // 2, 72, gfx.DIM)
+    if msg2:
+        s.text(msg2, (hal.W - s.width(msg2)) // 2, 88, gfx.DIM)
     gfx.show()
 
 
 def _boot():
     from cardgcalc import hal
 
-    hal.init()
+    try:
+        hal.init()
+    except RuntimeError as e:
+        # Keyboard missing: firmware for the other Cardputer model.
+        print(e)
+        _splash("wrong model: firmware for", hal.MODEL_NAME)
+        return
     _splash()
     if _safe_mode():
         _splash("safe mode: REPL on USB")

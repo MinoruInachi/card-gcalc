@@ -2,7 +2,9 @@
 
 [English](README.md) · **[取扱説明書](doc_ja/README.md)**
 
-M5Stack [Cardputer-Adv](https://docs.m5stack.com/ja/core/Cardputer-Adv) を、MicroPython ベースのグラフ電卓にするファームウェアです。
+M5Stack [Cardputer-Adv](https://docs.m5stack.com/ja/core/Cardputer-Adv) と [Cardputer](https://docs.m5stack.com/ja/core/Cardputer) を、MicroPython ベースのグラフ電卓にするファームウェアです。
+
+2 つの機種はキーボードの読み方が違うため、ファームウェアは機種ごとに分かれています (`card-gcalc-adv-vX.Y.bin` と `card-gcalc-cardputer-vX.Y.bin`)。それ以外の機能や、保存したデータ・プログラム・プラグインは同じです。
 
 - 起動するとアイコンメニューが表示され、13 個のアプリを選べます
 - 電卓アプリの計算は 10 進 15 桁 (BCD 相当) で行います。`0.1+0.2-0.3` は 0、`sin(π)` は 0 になります
@@ -363,16 +365,18 @@ Settings の「Language / 言語」で English / 日本語 を切り替えると
 - **翻訳の追加・修正**: `lang/*.tsv` (`英語<TAB>日本語`) を編集し、`python3 tools/mklang.py` で `src/cardgcalc/lang_ja.py` を生成します。
   - 翻訳の無い文字列は英語のまま表示されます。
 
-## ハードウェア (Cardputer-Adv)
+## ハードウェア
 
 | 機能 | ピン |
 |---|---|
 | LCD ST7789V2 240×135 | SCK 36, MOSI 35, DC 34, CS 37, RST 33, BL 38 (SPI2) |
-| キーボード TCA8418 | I2C SDA 8, SCL 9, INT 11 (0x34) |
+| キーボード (Cardputer-Adv) | TCA8418、I2C SDA 8, SCL 9, INT 11 (0x34) |
+| キーボード (Cardputer) | 74HC138 で行を選ぶ (A0 8, A1 9, A2 11)、列の入力 13, 15, 3, 4, 5, 6, 7 (プルアップ、押すと Low) |
 | microSD | SCK 40, MOSI 14, MISO 39, CS 12 (SPI3、`/sd` にマウント) |
 | Grove | G2 (黄), G1 (白) |
-| EXT ヘッダ | G3, G4, G6, G5, G13, G15 (G40/G14/G39 は SD と共用、G8/G9 は内部 I2C) |
+| EXT ヘッダ (Cardputer-Adv のみ) | G3, G4, G6, G5, G13, G15 (G40/G14/G39 は SD と共用、G8/G9 は内部 I2C)。Cardputer ではこれらのピンでキーボードを読むので、GPIO アプリには G1/G2 だけが出ます |
 | バッテリー電圧 | G10 (ADC, 1/2 分圧) |
+| バックライトの PWM | G38。Cardputer-Adv は 2 kHz。Cardputer は 1 kHz 以上だと点灯しないため 256 Hz |
 
 ## ビルドと書き込み
 
@@ -382,9 +386,15 @@ Settings の「Language / 言語」で English / 日本語 を切り替えると
 git clone --recurse-submodules https://github.com/MinoruInachi/card-gcalc.git
 cd card-gcalc
 tools/setup.sh                    # submodule の MicroPython v1.29.0 と ulab 6.12.1 を deps/ に取得し、mpy-cross と unix 版 (ulab 入り) をビルド
-IDF_PATH=/path/to/esp-idf firmware/build.sh
-firmware/flash.sh                 # /dev/cu.usbmodem* に書き込む
+IDF_PATH=/path/to/esp-idf firmware/build.sh            # Cardputer-Adv 用 (build-CARD_GCALC)
+IDF_PATH=/path/to/esp-idf firmware/build.sh cardputer  # Cardputer 用 (build-CARD_GCALC-CARDPUTER)
+firmware/flash.sh                 # Cardputer-Adv 用を /dev/cu.usbmodem* に書き込む
+firmware/flash.sh cardputer       # Cardputer 用を書き込む
 ```
+
+- `firmware/build.sh all` で両方をビルドします。アドレス 0x0 に書き込む 1 ファイルのイメージは `deps/micropython/ports/esp32/<ビルドディレクトリ>/firmware.bin` です。
+- Cardputer 用は、`CARD_GCALC` ボードの `CARDPUTER` バリアント (`BOARD_VARIANT=CARDPUTER`) です。`model_adv/` の代わりに `model_cardputer/cardgcalc_board.py` を組み込み、`cardgcalc.hal` はそれを見てキーボードの処理を選びます (`hal.MODEL` は `"adv"` か `"cardputer"`)。
+- 違う機種のファームウェアを書き込んだ場合、Cardputer-Adv 用は起動画面に「機種違い」と表示して止まります。Cardputer 用はこれを判別できず、Cardputer-Adv ではキーボードが反応しません。
 
 - MicroPython と ulab は git submodule (`deps/micropython`、`deps/ulab`) です。`--recurse-submodules` を付けずに clone した場合も、`tools/setup.sh` が取得します。
   - パッチを当てると `deps/micropython` の作業ツリーが変更されますが、`.gitmodules` の `ignore = dirty` により、親リポジトリの `git status` には表示されません。
@@ -420,7 +430,7 @@ for t in tests/test_*.py; do $M -X heapsize=8M $t; done   # bcd、式、ソル�
 ディレクトリ構成:
 
 ```
-firmware/            ボード定義 (CARD_GCALC)、C モジュール (ncore、bcd、ulab の組み込み設定)、パッチ、build/flash スクリプト
+firmware/            ボード定義 (CARD_GCALC、バリアント CARDPUTER)、C モジュール (ncore、bcd、ulab の組み込み設定)、パッチ、build/flash スクリプト
 src/main.py          起動処理 (frozen)
 src/cardgcalc/       電卓本体とスクリプト用 API (__init__.py): hal (LCD/キーボード)、gfx、ui、keymap、calc/ (式エンジン、数値計算)、apps/
 src/turtle.py ...    スクリプト用モジュール (turtle, matplotlib)

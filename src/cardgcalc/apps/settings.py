@@ -105,7 +105,7 @@ def about():
     lines = [
         "card-gcalc %s" % VERSION,
         T("Graphing calculator for"),
-        "M5Stack Cardputer-Adv",
+        hal.MODEL_NAME,
         "",
         "MicroPython %s" % ".".join(str(v) for v in impl[1][:3]),
         "%s" % getattr(impl, "_machine", sys.platform),

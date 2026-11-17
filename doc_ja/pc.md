@@ -7,7 +7,7 @@
 ```mermaid
 flowchart LR
     PC["PC<br/>mpremote / esptool<br/>tools/*.sh"]
-    DEV["Cardputer-Adv<br/>/data /programs /plugins"]
+    DEV["Cardputer-Adv / Cardputer<br/>/data /programs /plugins"]
     SD[("microSD カード<br/>/programs /plugins")]
     PC -- "USB (シリアル)<br/>ファイル転送・REPL・書き込み" --> DEV
     PC -- "カードリーダー<br/>コピー" --> SD
@@ -205,11 +205,19 @@ mpremote run myscript.py
 
 ## ファームウェアの書き込み
 
-[リリース](https://github.com/MinoruInachi/card-gcalc/releases) の `card-gcalc-vX.Y.bin` (ファームウェア一式) をダウンロードし、アドレス 0x0 に書き込みます。
+[リリース](https://github.com/MinoruInachi/card-gcalc/releases) から機種に合ったファームウェア一式をダウンロードし、アドレス 0x0 に書き込みます。
+
+| 機種 | ファイル |
+|---|---|
+| Cardputer-Adv | `card-gcalc-adv-vX.Y.bin` |
+| Cardputer | `card-gcalc-cardputer-vX.Y.bin` |
 
 ```sh
-python3 -m esptool --chip esp32s3 --baud 921600 write-flash 0x0 card-gcalc-vX.Y.bin
+python3 -m esptool --chip esp32s3 --baud 921600 write-flash 0x0 card-gcalc-adv-vX.Y.bin
 ```
+
+- 0.3 までのリリースは Cardputer-Adv 専用です (`card-gcalc-vX.Y.bin`)。
+- 違う機種のファームウェアでは、キーボードが反応しません。Cardputer-Adv 用を Cardputer に書き込むと、起動画面に「機種違い」と表示されます。正しいほうを書き込み直してください。
 
 - card-gcalc が入っている本体は、そのまま書き込めます (esptool が自動で書き込みモードにします)。
 - 別のファームウェアが入っているときや、書き込みに失敗するときは、手動でダウンロードモードにします: 電源を切って USB を抜き、`G0` ボタンを押したまま USB をつなぎます。書き込みが終わったら、電源を入れ直します。

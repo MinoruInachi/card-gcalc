@@ -1,6 +1,3 @@
-# Frozen modules for card-gcalc.
-freeze("$(PORT_DIR)/modules")
-include("$(MPY_DIR)/extmod/asyncio")
-require("upysh")
-# The calculator application itself.
-freeze("$(BOARD_DIR)/../../../src")
+# Frozen modules for card-gcalc (Cardputer-Adv build).
+include("$(BOARD_DIR)/manifest_common.py")
+module("cardgcalc_board.py", base_path="$(BOARD_DIR)/model_adv")

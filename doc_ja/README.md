@@ -2,7 +2,7 @@
 
 [English](../doc/README.md)
 
-card-gcalc は、M5Stack Cardputer-Adv をグラフ電卓にするファームウェアです。この説明書では、電卓の操作、各アプリの使い方、Python スクリプトの API、プラグインの作り方、PC との連携を説明します。
+card-gcalc は、M5Stack Cardputer-Adv と Cardputer をグラフ電卓にするファームウェアです。ファームウェアは機種ごとに分かれています。使える GPIO のピン (Cardputer には拡張ヘッダ EXT がない) のほかは、どちらも同じように使えます。この説明書では、電卓の操作、各アプリの使い方、Python スクリプトの API、プラグインの作り方、PC との連携を説明します。
 
 ![ホーム画面](images/home.png)
 

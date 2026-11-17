@@ -7,7 +7,7 @@ Connect the device to a PC with a USB cable, or exchange files on an SD card.
 ```mermaid
 flowchart LR
     PC["PC<br/>mpremote / esptool<br/>tools/*.sh"]
-    DEV["Cardputer-Adv<br/>/data /programs /plugins"]
+    DEV["Cardputer-Adv / Cardputer<br/>/data /programs /plugins"]
     SD[("microSD card<br/>/programs /plugins")]
     PC -- "USB (serial)<br/>files, REPL, flashing" --> DEV
     PC -- "card reader<br/>copy" --> SD
@@ -205,11 +205,19 @@ mpremote run myscript.py
 
 ## Flashing firmware
 
-Download `card-gcalc-vX.Y.bin` (the complete firmware) from the [releases](https://github.com/MinoruInachi/card-gcalc/releases) and write it at address 0x0:
+Download the complete firmware for your model from the [releases](https://github.com/MinoruInachi/card-gcalc/releases) and write it at address 0x0:
+
+| Model | File |
+|---|---|
+| Cardputer-Adv | `card-gcalc-adv-vX.Y.bin` |
+| Cardputer | `card-gcalc-cardputer-vX.Y.bin` |
 
 ```sh
-python3 -m esptool --chip esp32s3 --baud 921600 write-flash 0x0 card-gcalc-vX.Y.bin
+python3 -m esptool --chip esp32s3 --baud 921600 write-flash 0x0 card-gcalc-adv-vX.Y.bin
 ```
+
+- Releases up to 0.3 were for the Cardputer-Adv only (`card-gcalc-vX.Y.bin`).
+- The firmware for the wrong model does not work: the keyboard does not respond. The Cardputer-Adv firmware shows "wrong model" on the splash screen when written to a Cardputer. Write the right one again.
 
 - A device already running card-gcalc can be flashed as is (esptool puts it into download mode).
 - If other firmware is installed or flashing fails, enter download mode by hand: turn the power off, unplug USB, hold the `G0` button and plug USB back in. Power-cycle the device when flashing is done.

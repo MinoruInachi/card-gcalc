@@ -1,8 +1,14 @@
-# Hardware abstraction for the M5Stack Cardputer-Adv.
+# Hardware abstraction for the M5Stack Cardputer-Adv and Cardputer.
 #
 # Display : ST7789V2 240x135, SPI (SCK=36, MOSI=35, DC=34, CS=37, RST=33, BL=38)
-# Keyboard: TCA8418 on I2C (SDA=8, SCL=9, INT=11, addr 0x34), 4x14 layout
+# Keyboard: 4x14 layout
+#   Cardputer-Adv: TCA8418 on I2C (SDA=8, SCL=9, INT=11, addr 0x34)
+#   Cardputer    : 74HC138 row select (A0=8, A1=9, A2=11) and 7 column inputs
+#                  with pull-ups (13, 15, 3, 4, 5, 6, 7), active low
 # microSD : SPI (SCK=40, MOSI=14, MISO=39, CS=12)
+#
+# Which model the firmware is for is fixed at build time by the frozen
+# module cardgcalc_board (firmware/boards/CARD_GCALC/model_*).
 #
 # On non-ESP32 platforms (unix MicroPython) a simulator backend is used so
 # the UI can be tested on the host: see tools/sim.py.
@@ -13,6 +19,15 @@ import framebuf
 W = 240
 H = 135
 IS_DEVICE = sys.platform == "esp32"
+
+try:
+    import cardgcalc_board as _board
+
+    MODEL = _board.MODEL  # "adv" or "cardputer"
+    MODEL_NAME = _board.NAME
+except ImportError:
+    MODEL = "adv"
+    MODEL_NAME = "M5Stack Cardputer-Adv"
 
 
 def rgb(r, g, b):
@@ -28,6 +43,11 @@ def rgb(r, g, b):
 def unrgb(c):
     c = ((c & 0xFF) << 8) | (c >> 8)
     return ((c >> 8) & 0xF8, (c >> 3) & 0xFC, (c << 3) & 0xF8)
+
+
+# Backlight PWM frequency.  The Cardputer's backlight stays dark when the
+# PWM is 1 kHz or more (it lights at 200-500 Hz).
+BL_FREQ = 256 if MODEL == "cardputer" else 2000
 
 
 class Display:
@@ -62,7 +82,7 @@ class Display:
         cmd(0x21)  # INVON (IPS panel)
         cmd(0x13)  # NORON
         cmd(0x29)  # DISPON
-        self._bl = PWM(Pin(38), freq=2000, duty_u16=0)
+        self._bl = PWM(Pin(38), freq=BL_FREQ, duty_u16=0)
         self.fb.fill(0)
         self.show()
         self.set_brightness(self.brightness)
@@ -222,16 +242,26 @@ class Keyboard:
         self.queue = []
         self._rep = None  # (pos, next_ms)
         self.on_mods = None  # callback when latch state changes
+        self.i2c = None
+        self._events = None
         if IS_DEVICE:
-            self._init_tca()
+            if MODEL == "cardputer":
+                self._init_matrix()
+            else:
+                self._init_tca()
 
+    # ---- Cardputer-Adv: TCA8418 -------------------------------------
     def _init_tca(self):
         from machine import I2C, Pin
 
         self.i2c = I2C(0, scl=Pin(9), sda=Pin(8), freq=400000)
         self.addr = 0x34
         w = self._w
-        w(0x1D, 0x7F)  # KP_GPIO1: R0..R6 keypad
+        try:
+            w(0x1D, 0x7F)  # KP_GPIO1: R0..R6 keypad
+        except OSError:
+            self.i2c = None
+            raise RuntimeError("keyboard not found: firmware for " + MODEL_NAME)
         w(0x1E, 0xFF)  # KP_GPIO2: C0..C7 keypad
         w(0x1F, 0x00)  # KP_GPIO3
         w(0x01, 0x01)  # CFG: KE_IEN
@@ -243,6 +273,7 @@ class Keyboard:
             self._r(0x04)
         w(0x02, 0x1F)
         self.int_pin = Pin(11, Pin.IN)
+        self._events = self._tca_events
 
     def _w(self, reg, val):
         self.i2c.writeto_mem(self.addr, reg, bytes((val,)))
@@ -252,6 +283,7 @@ class Keyboard:
         return self._b1[0]
 
     def _raw_events(self):
+        """Pending TCA8418 event bytes."""
         out = []
         try:
             n = self._r(0x03) & 0x0F
@@ -275,6 +307,72 @@ class Keyboard:
         col = r * 2 + (1 if c > 3 else 0)
         row = c % 4
         return bool(ev & 0x80), row, col
+
+    def _tca_events(self):
+        for ev in self._raw_events():
+            self.feed(ev)
+
+    # ---- Cardputer: 74HC138 GPIO matrix -----------------------------
+    MX_OUT = (8, 9, 11)  # 74HC138 A0, A1, A2
+    MX_IN = (13, 15, 3, 4, 5, 6, 7)  # column inputs, bit 0..6
+    MX_PERIOD = 5  # ms between scans
+    MX_RELEASE = 2  # scans a key must read released before it counts
+
+    def _init_matrix(self):
+        from machine import Pin
+
+        self._mx_out = [Pin(p, Pin.OUT, value=0) for p in self.MX_OUT]
+        self._mx_in = [Pin(p, Pin.IN, Pin.PULL_UP) for p in self.MX_IN]
+        self._mx_down = {}  # (row, col) -> scans seen released (0 = held)
+        self._mx_t = time.ticks_ms()
+        self._events = self._matrix_events
+
+    @staticmethod
+    def matrix_pos(i, j):
+        """74HC138 output i (0..7) and input bit j (0..6) -> (row, col)."""
+        return 3 - (i & 3), j * 2 + (0 if i > 3 else 1)
+
+    def _scan_matrix(self):
+        down = []
+        a0, a1, a2 = self._mx_out
+        ins = self._mx_in
+        for i in range(8):
+            a0(i & 1)
+            a1((i >> 1) & 1)
+            a2(i >> 2)
+            for j in range(7):
+                if not ins[j]():
+                    down.append(self.matrix_pos(i, j))
+        return down
+
+    def _matrix_events(self):
+        now = time.ticks_ms()
+        if time.ticks_diff(now, self._mx_t) < self.MX_PERIOD:
+            return
+        self._mx_t = now
+        self.feed_matrix(self._scan_matrix())
+
+    def feed_matrix(self, down):
+        """Update from one scan: down = list of (row, col) read as pressed.
+
+        A press counts at once; a release only after MX_RELEASE scans in a
+        row read the key as up, which hides contact bounce.
+        """
+        st = self._mx_down
+        for pos in list(st):
+            if pos in down:
+                st[pos] = 0
+            else:
+                st[pos] += 1
+                if st[pos] >= self.MX_RELEASE:
+                    del st[pos]
+                    self._release(*pos)
+        new = [p for p in down if p not in st]
+        # modifiers first, so that "shift+a" pressed together reads as "A"
+        new.sort(key=lambda p: 0 if _LAYOUT[p[0]][p[1]] in _MODBITS else 1)
+        for pos in new:
+            st[pos] = 0
+            self._press(*pos)
 
     def mods(self):
         return self.held | self.latched | self.locked
@@ -337,14 +435,12 @@ class Keyboard:
 
     def poll(self):
         """Read pending hardware events; return a Key or None."""
-        if IS_DEVICE:
-            for ev in self._raw_events():
-                self.feed(ev)
+        if self._events is not None:
+            self._events()
             if not self.queue and self._rep:
                 now = time.ticks_ms()
                 pos, t = self._rep
                 if time.ticks_diff(now, t) >= 0:
-                    cap = _LAYOUT[pos[0]][pos[1]]
                     self._rep = None
                     saved = self.latched
                     self._press(pos[0], pos[1])
@@ -367,6 +463,11 @@ _idle_hooks = []
 
 
 def init():
+    """Set up the display and keyboard.
+
+    Raises RuntimeError when the keyboard is missing, i.e. the firmware is
+    for the other Cardputer model (the display is set up already).
+    """
     global display, keyboard
     if display is None:
         display = Display()

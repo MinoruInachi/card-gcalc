@@ -1,4 +1,4 @@
-# cardgcalc: Python API for scripts on the Cardputer-Adv graphing calculator.
+# cardgcalc: Python API for scripts on the Cardputer(-Adv) graphing calculator.
 #
 # This package also holds the calculator itself (cardgcalc.hal, .gfx, .ui,
 # .apps ...); `import cardgcalc` gives scripts the API below.
@@ -59,6 +59,8 @@ G6 = 6
 G13 = 13
 G15 = 15
 PINS = (1, 2, 3, 4, 5, 6, 13, 15)
+if hal.MODEL == "cardputer":
+    PINS = (1, 2)  # no EXT header: G3-G6/G13/G15 read the keyboard
 
 
 def _hw():

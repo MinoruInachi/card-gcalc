@@ -1,5 +1,6 @@
 # card-gcalc: graphing calculator firmware for M5Stack Cardputer-Adv
-# (ESP32-S3FN8, 8MB flash, no PSRAM)
+# (ESP32-S3FN8, 8MB flash, no PSRAM).  BOARD_VARIANT=CARDPUTER builds it for
+# the original Cardputer (same SoC and flash).
 set(IDF_TARGET esp32s3)
 
 set(SDKCONFIG_DEFAULTS

@@ -2,7 +2,7 @@
 
 [日本語](../doc_ja/README.md)
 
-card-gcalc is firmware that turns the M5Stack Cardputer-Adv into a graphing calculator. This manual covers calculator operation, each app, the Python scripting API, writing plugins, and working with a PC.
+card-gcalc is firmware that turns the M5Stack Cardputer-Adv or Cardputer into a graphing calculator. Each model has its own firmware image; apart from the GPIO pins (the Cardputer has no EXT header), they work the same. This manual covers calculator operation, each app, the Python scripting API, writing plugins, and working with a PC.
 
 ![Home screen](images/home.png)
 

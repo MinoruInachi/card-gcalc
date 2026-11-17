@@ -1,10 +1,18 @@
 {
-    "deploy": ["../deploy_nativeusb.md"],
+    "deploy": [
+        "../deploy_nativeusb.md"
+    ],
     "docs": "",
-    "features": ["BLE off", "Double precision float"],
+    "features": [
+        "BLE off",
+        "Double precision float"
+    ],
     "images": [],
     "mcu": "esp32s3",
-    "product": "M5Stack Cardputer-Adv (card-gcalc)",
+    "product": "M5Stack Cardputer-Adv / Cardputer (card-gcalc)",
     "url": "https://docs.m5stack.com/en/core/Cardputer-Adv",
-    "vendor": "M5Stack"
+    "vendor": "M5Stack",
+    "variants": {
+        "CARDPUTER": "M5Stack Cardputer (74HC138 keyboard matrix)"
+    }
 }

@@ -101,7 +101,7 @@ Fix・Sci・Eng を選ぶと、桁数を入力する欄が出ます。範囲外�
 
 ### バージョン情報
 
-ファームウェアの名前とバージョン (`card-gcalc 0.2`)、「グラフ電卓 M5Stack Cardputer-Adv」、MicroPython のバージョン、ボード名、フォントのクレジット、CPU のクロックを表示します。
+ファームウェアの名前とバージョン (`card-gcalc 0.2`)、「グラフ電卓 M5Stack Cardputer-Adv」(Cardputer では「M5Stack Cardputer」)、MicroPython のバージョン、ボード名、フォントのクレジット、CPU のクロックを表示します。
 
 ### 全データ初期化
 

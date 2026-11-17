@@ -2,7 +2,9 @@
 
 [日本語](README_ja.md) · **[User manual](doc/README.md)**
 
-Firmware that turns the M5Stack [Cardputer-Adv](https://docs.m5stack.com/en/core/Cardputer-Adv) into a graphing calculator, built on MicroPython.
+Firmware that turns the M5Stack [Cardputer-Adv](https://docs.m5stack.com/en/core/Cardputer-Adv) or [Cardputer](https://docs.m5stack.com/en/core/Cardputer) into a graphing calculator, built on MicroPython.
+
+The two models read their keyboards differently, so there is a separate firmware image for each (`card-gcalc-adv-vX.Y.bin` and `card-gcalc-cardputer-vX.Y.bin`). Everything else, including saved data, programs and plugins, is the same.
 
 - At startup an icon menu lets you choose from 13 apps
 - The calculator apps compute in 15-digit decimal (equivalent to BCD): `0.1+0.2-0.3` is 0 and `sin(π)` is 0
@@ -363,16 +365,18 @@ Switching Settings → "Language / 言語" between English and 日本語 changes
 - **Adding or fixing translations**: edit `lang/*.tsv` (`English<TAB>Japanese`) and run `python3 tools/mklang.py` to generate `src/cardgcalc/lang_ja.py`.
   - Strings without a translation are shown in English.
 
-## Hardware (Cardputer-Adv)
+## Hardware
 
 | Function | Pins |
 |---|---|
 | LCD ST7789V2 240×135 | SCK 36, MOSI 35, DC 34, CS 37, RST 33, BL 38 (SPI2) |
-| Keyboard TCA8418 | I2C SDA 8, SCL 9, INT 11 (0x34) |
+| Keyboard (Cardputer-Adv) | TCA8418 on I2C SDA 8, SCL 9, INT 11 (0x34) |
+| Keyboard (Cardputer) | 74HC138 row select A0 8, A1 9, A2 11; column inputs 13, 15, 3, 4, 5, 6, 7 (pull-up, active low) |
 | microSD | SCK 40, MOSI 14, MISO 39, CS 12 (SPI3, mounted at `/sd`) |
 | Grove | G2 (yellow), G1 (white) |
-| EXT header | G3, G4, G6, G5, G13, G15 (G40/G14/G39 are shared with SD, G8/G9 are the internal I2C) |
+| EXT header (Cardputer-Adv only) | G3, G4, G6, G5, G13, G15 (G40/G14/G39 are shared with SD, G8/G9 are the internal I2C). On the Cardputer these pins read the keyboard, so the GPIO app shows only G1/G2 |
 | Battery voltage | G10 (ADC, 1/2 divider) |
+| Backlight PWM | G38. 2 kHz on the Cardputer-Adv; 256 Hz on the Cardputer, whose backlight stays dark at 1 kHz or more |
 
 ## Building and flashing
 
@@ -382,9 +386,15 @@ Requirements: ESP-IDF v5.5.x (tested with v5.5.4), Python 3 (esptool, mpremote, 
 git clone --recurse-submodules https://github.com/MinoruInachi/card-gcalc.git
 cd card-gcalc
 tools/setup.sh                    # fetch the MicroPython v1.29.0 and ulab 6.12.1 submodules into deps/, build mpy-cross and the unix port (with ulab)
-IDF_PATH=/path/to/esp-idf firmware/build.sh
-firmware/flash.sh                 # flash to /dev/cu.usbmodem*
+IDF_PATH=/path/to/esp-idf firmware/build.sh            # Cardputer-Adv (build-CARD_GCALC)
+IDF_PATH=/path/to/esp-idf firmware/build.sh cardputer  # Cardputer (build-CARD_GCALC-CARDPUTER)
+firmware/flash.sh                 # flash the Cardputer-Adv build to /dev/cu.usbmodem*
+firmware/flash.sh cardputer       # flash the Cardputer build
 ```
+
+- `firmware/build.sh all` builds both. The single image to write at 0x0 is `deps/micropython/ports/esp32/<build dir>/firmware.bin`.
+- The Cardputer build is the `CARDPUTER` variant of the `CARD_GCALC` board (`BOARD_VARIANT=CARDPUTER`). It freezes `model_cardputer/cardgcalc_board.py` instead of `model_adv/`, and `cardgcalc.hal` selects the keyboard driver from it (`hal.MODEL` is `"adv"` or `"cardputer"`).
+- If the firmware for the other model is flashed by mistake, the Cardputer-Adv build stops at the splash screen with "wrong model". The Cardputer build cannot detect this, and its keyboard does not respond on a Cardputer-Adv.
 
 - MicroPython and ulab are git submodules (`deps/micropython`, `deps/ulab`). If you cloned without `--recurse-submodules`, `tools/setup.sh` fetches them.
   - Applying the patches modifies the `deps/micropython` working tree, but `ignore = dirty` in `.gitmodules` keeps it out of the parent repository's `git status`.
@@ -420,7 +430,7 @@ for t in tests/test_*.py; do $M -X heapsize=8M $t; done   # bcd, expressions, so
 Directory layout:
 
 ```
-firmware/            board definition (CARD_GCALC), C modules (ncore, bcd, ulab build config), patches, build/flash scripts
+firmware/            board definition (CARD_GCALC, variant CARDPUTER), C modules (ncore, bcd, ulab build config), patches, build/flash scripts
 src/main.py          startup (frozen)
 src/cardgcalc/       the calculator and the script API (__init__.py): hal (LCD/keyboard), gfx, ui, keymap, calc/ (expression engine, numerics), apps/
 src/turtle.py ...    script modules (turtle, matplotlib)
