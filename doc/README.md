@@ -16,7 +16,7 @@ card-gcalc is firmware that turns the M5Stack Cardputer-Adv or Cardputer into a 
 
 | # | App | What it does |
 |---|---|---|
-| 1 | [Calc](apps/calc.md) | 15-digit decimal arithmetic, variables, exact results with fractions, √ and π, complex numbers |
+| 1 | [Calc](apps/calc.md) | 15-digit decimal arithmetic, fractions and mixed numbers in stacked form, variables, exact results with √ and π, complex numbers |
 | 2 | [Graph](apps/graph.md) | y=f(x), polar and parametric graphs, trace, analysis (roots, extrema, intersections, integrals) |
 | 3 | [3D Graph](apps/graph3d.md) | Surfaces, lines, planes, spheres and more in 3D; cross sections, intersections and relative positions |
 | 4 | [Table](apps/table.md) | Tables of function values |

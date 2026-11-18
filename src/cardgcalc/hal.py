@@ -6,6 +6,7 @@
 #   Cardputer    : 74HC138 row select (A0=8, A1=9, A2=11) and 7 column inputs
 #                  with pull-ups (13, 15, 3, 4, 5, 6, 7), active low
 # microSD : SPI (SCK=40, MOSI=14, MISO=39, CS=12)
+# RGB LED : WS2812 (GRB order) on G21, both models
 #
 # Which model the firmware is for is fixed at build time by the frozen
 # module cardgcalc_board (firmware/boards/CARD_GCALC/model_*).
@@ -516,3 +517,68 @@ def battery_pct():
         return max(0, min(100, pct))
     except Exception:
         return None
+
+
+# ---------------------------------------------------------------------------
+# RGB LED (WS2812 on G21)
+# ---------------------------------------------------------------------------
+LED_PIN = 21
+_led_pin = None
+_led_rgb = (0, 0, 0)
+_led_level = 100  # brightness scale, percent
+led_used = False
+
+
+def _led_send():
+    if not IS_DEVICE:
+        return
+    global _led_pin
+    import machine
+
+    if _led_pin is None:
+        _led_pin = machine.Pin(LED_PIN, machine.Pin.OUT, value=0)
+    r, g, b = _led_rgb
+    k = _led_level
+    # WS2812 timing at 800 kHz: (T0H, T0L, T1H, T1L) in ns
+    machine.bitstream(_led_pin, 0, (400, 850, 800, 450),
+                      bytearray((g * k // 100, r * k // 100, b * k // 100)))
+
+
+def _byte(v):
+    v = int(v)
+    return 0 if v < 0 else 255 if v > 255 else v
+
+
+def led_set(r, g, b):
+    """Light the RGB LED with r, g, b (0-255); (0, 0, 0) turns it off."""
+    global _led_rgb, led_used
+    _led_rgb = (_byte(r), _byte(g), _byte(b))
+    led_used = True
+    _led_send()
+
+
+def led_get():
+    return _led_rgb
+
+
+def led_level(pct=None):
+    """Brightness scale of the LED in percent (applied to every colour);
+    returns the current value."""
+    global _led_level
+    if pct is not None:
+        _led_level = max(0, min(100, int(pct)))
+        _led_send()
+    return _led_level
+
+
+def led_reset():
+    """Turn the LED off and restore full scale if a script used it."""
+    global _led_level, led_used
+    if not led_used:
+        return
+    _led_level = 100
+    try:
+        led_set(0, 0, 0)
+    except Exception:
+        pass
+    led_used = False

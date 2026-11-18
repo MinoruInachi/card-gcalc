@@ -18,7 +18,7 @@ k = cardgcalc.wait_key()
 
 | モジュール | 内容 |
 |---|---|
-| `cardgcalc` | 画面、キーボード、時間、グラフ、GPIO (この章) |
+| `cardgcalc` | 画面、キーボード、時間、グラフ、GPIO、RGB LED (この章) |
 | `turtle` | タートルグラフィックス ([turtle](#turtle)) |
 | `matplotlib.pyplot` | 折れ線・散布図・棒グラフ・ヒストグラム ([matplotlib.pyplot](#matplotlibpyplot)) |
 | `ulab` | numpy / scipy 互換の配列計算 ([ulab](#ulab)) |
@@ -210,7 +210,34 @@ i2c = cardgcalc.i2c_grove()
 print([hex(a) for a in i2c.scan()])
 ```
 
-> 注意: ピンには 3.3V を超える電圧をかけないでください。G40・G14・G39 は SD カード、G8・G9 は内蔵のキーボード (I2C) が使っているので、`machine` モジュールで直接触らないでください。
+> 注意: ピンには 3.3V を超える電圧をかけないでください。G40・G14・G39 は SD カード、G8・G9 は内蔵のキーボード (I2C)、G21 は RGB LED が使っているので、`machine` モジュールで直接触らないでください。
+
+## RGB LED
+
+本体の RGB LED (フルカラー LED) を点灯できます。Cardputer-Adv と Cardputer のどちらでも使えます。
+
+| API | 内容 |
+|---|---|
+| `led(r, g, b)` | LED を r, g, b (0〜255) の色で点灯する |
+| `led(c)` | 色 c で点灯する。c は `(r, g, b)`、色名 (`"red"` など)、`RED` などの定数、`color()` の値 |
+| `led(None)` / `led_off()` | 消灯する (`led(0, 0, 0)`、`led("black")` も同じ) |
+| `led()` | 今の色を `(r, g, b)` で返す |
+| `led_brightness(pct=None)` | 明るさ (0〜100 %)。どの色にもこの割合がかかる。今の値を返す |
+
+- スクリプトが終わると、LED は消え、明るさは 100 % に戻ります (シェルでは、シェルを終えたとき)。
+- LED は最大の明るさだととてもまぶしいので、`led_brightness(10)` 程度に下げて使うのがおすすめです。
+- 定数の色 (`RED` など) は画面用の値なので、LED では少しずれた色になります。正確な色は `(r, g, b)` で指定します。
+
+例: LED の色をゆっくり変える
+
+```python
+import cardgcalc as cg
+cg.led_brightness(20)
+for i in range(256):
+    cg.led(255 - i, i, 0)   # 赤 → 緑
+    cg.sleep_ms(10)
+cg.wait_key()
+```
 
 ## turtle
 

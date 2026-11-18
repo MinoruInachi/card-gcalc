@@ -18,7 +18,7 @@ M5Stack [Cardputer-Adv](https://docs.m5stack.com/ja/core/Cardputer-Adv) と [Car
 
 | # | アプリ | 日本語表示 | 内容 |
 |---|---|---|---|
-| 1 | **Calc** | 計算 | 計算履歴付きの計算画面。変数 (`→A` / `A=…`)、Ans、厳密表示の切り替え (分数・π・√)、Deg/Rad/Gra、Norm/Fix/Sci/Eng、複素数 |
+| 1 | **Calc** | 計算 | 計算履歴付きの計算画面。分数・帯分数を上下に並べた形で入力・表示し、分数のまま計算 (`1/3+1/6` → `1/2`)、変数 (`→A` / `A=…`)、Ans、厳密表示の切り替え (分数・π・√)、Deg/Rad/Gra、Norm/Fix/Sci/Eng、複素数 |
 | 2 | **Graph** | グラフ | Y1〜Y6 (y=f(x)・極座標 r=f(θ)・媒介変数)。パン・ズーム・トレース。Analysis (根、極小・極大、交点、y(x)、x(y)、dy/dx、∫dx の塗りつぶし) |
 | 3 | **3D Graph** | 3Dグラフ | Z1〜Z3 (z=f(x,y)、パラメーター、テンプレート (直線・平面・球・円柱・円錐)、X 軸・Y 軸回転体)。回転・ズーム・軸方向表示・自動回転・トレース。Analysis (断面、交点・交線、位置関係) |
 | 4 | **Table** | 数表 | 関数の数表。開始値と刻み幅を変更でき、際限なくスクロールできる |
@@ -65,6 +65,7 @@ M5Stack [Cardputer-Adv](https://docs.m5stack.com/ja/core/Cardputer-Adv) と [Car
 - 仮数は 10 進 15 桁、指数は ±99 です。演算のたびに 15 桁へ四捨五入します。表示は通常 10 桁です。
   - 範囲を超えるとエラー (Math error) になり、1E-99 より小さい値は 0 になります
 - 10 進で正確に書ける数は誤差なく扱えます。`0.1+0.2-0.3` は 0、`1-0.9` は 0.1 です
+- 計算画面では、分数を分数のまま正確に計算します (`src/cardgcalc/calc/frac.py`)。`1/3×3` はちょうど 1、`1/7+1/13` は `20/91` です
 - 関数 (√、ln、sin など) は 18 桁で計算してから 15 桁に丸めます。ずれても 15 桁目の 1 単位以内です
 - 三角関数:
   - 度・グラードでは周期を 10 進のまま正確に処理するので、`sin(180)` や `cos(90)` は 0 です
@@ -103,7 +104,7 @@ M5Stack [Cardputer-Adv](https://docs.m5stack.com/ja/core/Cardputer-Adv) と [Car
 | f / n / m / b | ! nCr( mod( abs( | floor( nPr( min( gcd( |
 | d / z / o / v | d/dx( Σ( ∏( solve( | deg( randint( rand() lcm( |
 | 1 / 2 / 3 / 6 / 0 | ⁻¹ ² ³ ^ E(×10ⁿ) | fact( ³ ∛( |
-| = / 8 / / / 5 / 9 / . | → × ÷ % ( , | — ∞ |
+| = / 8 / / / 5 / 9 / . | → × ÷ % ( , (計算画面では / は分数) | — ∞ 帯分数 (計算画面) — — — |
 
 式の書き方の例: `2sin(π/6)`、`x²-3x+2`、`3→A`、`A(A+1)`、`∫(x²,0,3)`、`d/dx(x³,2)`、`Σ(k²,k,1,10)`、`solve(x²-2,1)`、`(-8)^(1/3)` (= -2)、`e^(iπ)` (複素数モードで -1)。
 暗黙の乗算 (`2x`、`3(x+1)`、`(a)(b)`) に対応しています。閉じ括弧は省略できます。
@@ -118,7 +119,7 @@ M5Stack [Cardputer-Adv](https://docs.m5stack.com/ja/core/Cardputer-Adv) と [Car
 
 スクリプトから使えるモジュール:
 
-- `cardgcalc`: 画面・キーボード・GPIO などを扱う本機用の API (次節)
+- `cardgcalc`: 画面・キーボード・GPIO・RGB LED などを扱う本機用の API (次節)
 - `turtle`: forward、left、circle、color、penup など
 - `matplotlib.pyplot`: plot、scatter、bar、hist、axis、grid、text、show
   - データにはリスト・タプルのほか、ulab の ndarray をそのまま渡せます
@@ -224,6 +225,17 @@ cardgcalc.pin_out(cardgcalc.G1, 1); v = cardgcalc.analog(cardgcalc.G2); cardgcal
 | `pwm(p, freq=1000, duty=50)` | PWM 出力 (周波数 Hz、デューティ %)。`duty=None` で停止 |
 | `tone(p, freq, ms)` | p に圧電ブザーなどをつないで、音を ms ミリ秒鳴らす |
 | `i2c_grove(freq=100000)` | Grove ポート (SDA=G2、SCL=G1) の I2C (`machine.SoftI2C`) |
+
+#### RGB LED
+
+| API | 内容 |
+|---|---|
+| `led(r, g, b)`、`led(c)` | 本体の RGB LED を点灯する。c は `(r, g, b)`、色名、`RED` などの定数 |
+| `led(None)` / `led_off()` | 消灯する |
+| `led()` | 今の色を `(r, g, b)` で返す |
+| `led_brightness(pct=None)` | LED の明るさ (0〜100 %) |
+
+スクリプトが終わると LED は消えます。
 
 ## プラグイン
 
@@ -424,7 +436,7 @@ python3 tools/devsim.py cardgcalc.app:main '2 F6 #500 @graph' dev_out
 tools/dev.sh push src/cardgcalc/apps/calc.py && tools/dev.sh reset
 tools/dev.sh clean                        # 上書き用のコピーを削除する
 # テスト
-for t in tests/test_*.py; do $M -X heapsize=8M $t; done   # bcd、式、ソルバ、グラフ、方程式・行列、統計、BASIC
+for t in tests/test_*.py; do $M -X heapsize=8M $t; done   # bcd、式、分数、ソルバ、グラフ、方程式・行列、統計、BASIC
 ```
 
 ディレクトリ構成:

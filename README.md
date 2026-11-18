@@ -18,7 +18,7 @@ The two models read their keyboards differently, so there is a separate firmware
 
 | # | App | Japanese label | Description |
 |---|---|---|---|
-| 1 | **Calc** | 計算 | Calculation screen with history. Variables (`→A` / `A=…`), Ans, exact display toggle (fractions, π, √), Deg/Rad/Gra, Norm/Fix/Sci/Eng, complex numbers |
+| 1 | **Calc** | 計算 | Calculation screen with history. Fractions and mixed numbers typed and shown in stacked form, calculated exactly (`1/3+1/6` → `1/2`), variables (`→A` / `A=…`), Ans, exact display toggle (fractions, π, √), Deg/Rad/Gra, Norm/Fix/Sci/Eng, complex numbers |
 | 2 | **Graph** | グラフ | Y1–Y6 (y=f(x), polar r=f(θ), parametric). Pan, zoom, trace. Analysis (roots, minimum/maximum, intersections, y(x), x(y), dy/dx, shaded ∫dx) |
 | 3 | **3D Graph** | 3Dグラフ | Z1–Z3 (z=f(x,y), parametric, templates (line, plane, sphere, cylinder, cone), solids of revolution about the X and Y axes). Rotate, zoom, view along an axis, auto-rotate, trace. Analysis (cross sections, intersection points and lines, relative position) |
 | 4 | **Table** | 数表 | Table of function values. Adjustable start and step, scrolls without limit |
@@ -65,6 +65,7 @@ Numbers in the calculator apps (Calc, Graph, 3D Graph, Table, Equation, Stats, M
 - The mantissa has 15 decimal digits and the exponent ranges over ±99. Every operation rounds to 15 digits. Normally 10 digits are displayed.
   - Out-of-range results raise an error (Math error); values smaller than 1E-99 become 0
 - Numbers that can be written exactly in decimal are handled without error: `0.1+0.2-0.3` is 0 and `1-0.9` is 0.1
+- On the Calc screen, fractions are calculated exactly (`src/cardgcalc/calc/frac.py`): `1/3×3` is exactly 1 and `1/7+1/13` is `20/91`
 - Functions (√, ln, sin and so on) are computed to 18 digits and then rounded to 15. Any error is within one unit in the 15th digit
 - Trigonometric functions:
   - In degrees and grads the period is reduced exactly in decimal, so `sin(180)` and `cos(90)` are 0
@@ -103,7 +104,7 @@ Modifier keys (`shift` `ctrl` `opt` `alt` `fn`) pressed and released on their ow
 | f / n / m / b | ! nCr( mod( abs( | floor( nPr( min( gcd( |
 | d / z / o / v | d/dx( Σ( ∏( solve( | deg( randint( rand() lcm( |
 | 1 / 2 / 3 / 6 / 0 | ⁻¹ ² ³ ^ E(×10ⁿ) | fact( ³ ∛( |
-| = / 8 / / / 5 / 9 / . | → × ÷ % ( , | — ∞ |
+| = / 8 / / / 5 / 9 / . | → × ÷ % ( , (/ is a fraction on the Calc screen) | — ∞ mixed number (Calc screen) — — — |
 
 Examples: `2sin(π/6)`, `x²-3x+2`, `3→A`, `A(A+1)`, `∫(x²,0,3)`, `d/dx(x³,2)`, `Σ(k²,k,1,10)`, `solve(x²-2,1)`, `(-8)^(1/3)` (= -2), `e^(iπ)` (-1 in complex mode).
 Implicit multiplication (`2x`, `3(x+1)`, `(a)(b)`) is supported. Closing parentheses may be omitted.
@@ -118,7 +119,7 @@ Scripts are saved as `/programs/*.py`. The first time you open the Python app, i
 
 Modules available to scripts:
 
-- `cardgcalc`: this device's API for the screen, keyboard, GPIO and more (next section)
+- `cardgcalc`: this device's API for the screen, keyboard, GPIO, RGB LED and more (next section)
 - `turtle`: forward, left, circle, color, penup and so on
 - `matplotlib.pyplot`: plot, scatter, bar, hist, axis, grid, text, show
   - Data can be lists, tuples or ulab ndarrays
@@ -224,6 +225,17 @@ The screen is 240×135 pixels with the origin (0, 0) at the top left. Drawing go
 | `pwm(p, freq=1000, duty=50)` | PWM output (frequency in Hz, duty in %). `duty=None` stops it |
 | `tone(p, freq, ms)` | Play a tone for ms milliseconds on a piezo buzzer or similar connected to p |
 | `i2c_grove(freq=100000)` | I2C on the Grove port (SDA=G2, SCL=G1) as a `machine.SoftI2C` |
+
+#### RGB LED
+
+| API | Description |
+|---|---|
+| `led(r, g, b)`, `led(c)` | Light the built-in RGB LED. c is an `(r, g, b)` tuple, a colour name or a constant such as `RED` |
+| `led(None)` / `led_off()` | Turn it off |
+| `led()` | Current colour as `(r, g, b)` |
+| `led_brightness(pct=None)` | LED brightness (0–100 %) |
+
+The LED is turned off when the script ends.
 
 ## Plugins
 
@@ -424,7 +436,7 @@ python3 tools/devsim.py cardgcalc.app:main '2 F6 #500 @graph' dev_out
 tools/dev.sh push src/cardgcalc/apps/calc.py && tools/dev.sh reset
 tools/dev.sh clean                        # remove the override copies
 # Tests
-for t in tests/test_*.py; do $M -X heapsize=8M $t; done   # bcd, expressions, solver, graph, equation/matrix, stats, BASIC
+for t in tests/test_*.py; do $M -X heapsize=8M $t; done   # bcd, expressions, fractions, solver, graph, equation/matrix, stats, BASIC
 ```
 
 Directory layout:

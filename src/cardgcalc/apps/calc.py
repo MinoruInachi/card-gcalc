@@ -3,19 +3,28 @@
 #   Enter        evaluate            (empty line: repeat last)
 #   ; / .        (fn) browse history; Enter inserts expression, → inserts result
 #   F1 Exact       toggle exact form (fraction / π / √) of the result
+#
+# Numbers are computed exactly as fractions where possible (calc/frac.py):
+# 1/3+1/6 shows 1/2.  A fraction result is shown as a fraction unless the
+# expression contains a decimal number; F1 switches to the decimal.
+#
+# History entry: [expr, decimal, exact, show_exact, error, mixed]; exact and
+# mixed are template text (see mathtext.py), mixed only for fractions > 1.
 #   F2 Vars      list variables
 #   F3 Angle     cycle DEG / RAD / GRA
 #   F4 Format    Norm / Fix / Sci / Eng
 #   F5 Clear     clear history
 #   F6 Keys      math key map
 #   expr→A  /  A=expr   store to a variable
-from cardgcalc import hal, gfx, ui, settings, state, storage
+#   opt+/  alt+/  fraction / mixed number template (drawn stacked)
+from cardgcalc import hal, gfx, ui, settings, state, storage, mathtext
 from cardgcalc.i18n import T
 from cardgcalc.hal import UP, DOWN, LEFT, RIGHT, ENTER, ESC, BS, DEL
-from cardgcalc.calc import numfmt
-from cardgcalc.calc.expr import CalcError
+from cardgcalc.calc import numfmt, frac
+from cardgcalc.calc.expr import CalcError, has_decimal
 
 MAXHIST = 40
+MAXFRAC = 20  # longest fraction shown (characters)
 _OPS_ANS = ("+", "-", "×", "÷", "^", "²", "³", "!", "⁻¹", "→", "%", "*", "/")
 
 
@@ -23,7 +32,7 @@ class Calc:
     def __init__(self):
         self.ctx = state.ctx()
         self.hist = storage.load_json("calc_hist.json", []) or []
-        self.ed = ui.LineEdit("", math=True, font="medium")
+        self.ed = ui.LineEdit("", math=True, font="medium", frac=True)
         self.sel = None  # selected history index (None = editing)
         self.f_in = gfx.font("normal")
         self.f_out = gfx.font("medium")
@@ -35,12 +44,20 @@ class Calc:
 
     def evaluate(self, src):
         try:
-            v = self.ctx.evaluate(src)
-            out = self.fmt(v)
-            ex = None
-            if not isinstance(v, int):
+            v = self.ctx.evaluate(src, exact=True)
+            if isinstance(v, frac.Q):
+                out = self.fmt(v.dec())
+                ex = mx = None
+                if self.frac_str(v):
+                    ex = frac.text(v)
+                    if abs(v.n) > v.d:
+                        mx = frac.text(v, True)
+                entry = [src, out, ex, 1 if ex and not has_decimal(src) else 0, 0, mx]
+            else:
                 ex = numfmt.exact(v)  # None for integers and complex values
-            entry = [src, out, ex, 0]
+                if ex:
+                    ex = frac.template(ex)
+                entry = [src, self.fmt(v), ex, 0]
         except CalcError as e:
             entry = [src, str(e), None, 0]
             entry.append(1)  # error flag
@@ -50,14 +67,22 @@ class Calc:
         if len(self.hist) > MAXHIST:
             self.hist.pop(0)
 
+    @staticmethod
+    def frac_str(q):
+        """'n/d' for a non-integer fraction that fits on the screen."""
+        if q.d == 1:
+            return None
+        s = frac.to_str(q)
+        return s if len(s) <= MAXFRAC else None
+
     # ---- drawing -----------------------------------------------------------
     def draw(self):
         fb = gfx.fb()
         gfx.fill()
         ui.status_bar("Calc", self._right())
-        # input box
-        iy = ui.BOT - 17
-        fb.fill_rect(0, iy - 2, ui.W, 19, gfx.PANEL)
+        # input box (taller while it holds a fraction)
+        iy = ui.BOT - 4 - self.ed.height()
+        fb.fill_rect(0, iy - 2, ui.W, ui.BOT - iy + 2, gfx.PANEL)
         fb.hline(0, iy - 2, ui.W, gfx.PANEL2)
         self.ed.draw(4, iy + 1, ui.W - 8, bg=gfx.PANEL, cursor=self.sel is None)
         # history, newest at the bottom
@@ -65,27 +90,48 @@ class Calc:
         i = len(self.hist) - 1
         fi = self.f_in
         fo = self.f_out
+        mixed = settings.get("mixedfrac")
         while i >= 0 and y > ui.TOP:
             e = self.hist[i]
             src, out = e[0], e[1]
             err = len(e) > 4 and e[4]
-            shown = e[2] if (e[3] and e[2]) else out
+            shown = out
+            if e[3] and e[2]:
+                shown = e[5] if (mixed and len(e) > 5 and e[5]) else e[2]
             if err:
                 shown = T(shown)
-            fo_ = fo
-            h = fi.h + fo_.h + 3
+            # heights (fractions are drawn stacked)
+            s2d = mathtext.has_marks(src)
+            r2d = mathtext.has_marks(shown)
+            hi = fi.h
+            if s2d:
+                _, iu, idn = mathtext.measure(src, fi)
+                hi = iu + idn
+            if r2d:
+                rw, ru, rd = mathtext.measure(shown, fo)
+                ho = ru + rd
+            else:
+                ho = fo.h
+            h = hi + ho + 3
             top = y - h
             if self.sel == i:
                 fb.fill_rect(0, max(ui.TOP, top), ui.W, y - max(ui.TOP, top) + 1, gfx.SEL)
             # expression (left)
             if top + 1 >= ui.TOP:
-                fi.text(fi.clip(src, ui.W - 6), 3, top + 1, gfx.DIM if self.sel != i else gfx.FG)
+                col = gfx.DIM if self.sel != i else gfx.FG
+                if s2d:
+                    mathtext.draw(src, fi, 3, top + 1 + iu, col, x1=ui.W - 3)
+                else:
+                    fi.text(fi.clip(src, ui.W - 6), 3, top + 1, col)
             # result (right)
-            ry = top + fi.h + 2
+            ry = top + hi + 2
             if ry >= ui.TOP:
                 col = gfx.ERR if err else (gfx.ACCENT2 if e[3] and e[2] else gfx.FG)
-                s = fo_.clip(shown, ui.W - 8)
-                fo_.text(s, ui.W - 4 - fo_.width(s), ry, col)
+                if r2d:
+                    mathtext.draw(shown, fo, max(4, ui.W - 4 - rw), ry + ru, col, x1=ui.W - 4)
+                else:
+                    s = fo.clip(shown, ui.W - 8)
+                    fo.text(s, ui.W - 4 - fo.width(s), ry, col)
             if i > 0:
                 fb.hline(4, top - 1, ui.W - 8, gfx.GRID)
             y = top - 2
@@ -120,7 +166,11 @@ class Calc:
         if not names:
             ui.message("Variables", "No variables yet.\nUse  expr→A  or  A=expr")
             return
-        items = [(n, self.fmt(v[n])) for n in names]
+        items = []
+        for n in names:
+            q = self.ctx.exact_var(n)
+            s = self.frac_str(q) if isinstance(q, frac.Q) else None
+            items.append((n, s or self.fmt(v[n])))
         i = ui.menu("Variables (Enter: insert)", items)
         if i is not None:
             self.ed.insert(names[i])
@@ -132,13 +182,17 @@ class Calc:
         self.ctx.angle = a
 
     def choose_format(self):
-        opts = ["Norm", "Fix", "Sci", "Eng", T("Complex") + ": " + T("on" if settings.get("complex") else "off")]
+        opts = ["Norm", "Fix", "Sci", "Eng", T("Complex") + ": " + T("on" if settings.get("complex") else "off"),
+                T("Fraction") + ": " + T("mixed" if settings.get("mixedfrac") else "improper")]
         i = ui.menu("Display format", opts)
         if i is None:
             return
         if i == 4:
             settings.set("complex", not settings.get("complex"))
             self.ctx.complex = settings.get("complex")
+            return
+        if i == 5:
+            settings.set("mixedfrac", not settings.get("mixedfrac"))
             return
         mode = ("norm", "fix", "sci", "eng")[i]
         if mode == "norm":
@@ -169,7 +223,12 @@ class Calc:
         elif kk == RIGHT or k.key == "/":
             e = self.hist[self.sel]
             if not (len(e) > 4 and e[4]):
-                self.ed.insert(e[2] if (e[3] and e[2]) else e[1])
+                s = e[1]
+                if e[3] and e[2]:
+                    s = e[5] if (settings.get("mixedfrac") and len(e) > 5 and e[5]) else e[2]
+                if "/" in s and self.ed.text:
+                    s = "(" + s + ")"  # old linear form: 2^(1/2), not 2^1/2
+                self.ed.insert(s)
             self.sel = None
         elif kk in (BS, DEL):
             del self.hist[self.sel]
@@ -211,6 +270,8 @@ class Calc:
             if k.base == "h" and k.mods & hal.FN:
                 ui.show_keymap_help()
                 continue
+            if k.key in (UP, DOWN) and self.ed.updown(k.key):
+                continue  # inside a fraction: numerator <-> denominator
             if k.key == UP:
                 if self.hist:
                     self.sel = len(self.hist) - 1
@@ -222,6 +283,8 @@ class Calc:
                 from cardgcalc import keymap
 
                 tok = keymap.lookup(k) if k.mods & (hal.OPT | hal.ALT) else k.key
+                if k.mods & (hal.OPT | hal.ALT) and k.base == "/":
+                    tok = None  # fraction template, not ÷
                 if tok in _OPS_ANS:
                     self.ed.insert("Ans")
             r = self.ed.handle(k)

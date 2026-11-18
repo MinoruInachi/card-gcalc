@@ -36,6 +36,7 @@ HELP = (
     ("opt", "f !  n nCr  m mod  b abs"),
     ("opt", "d d/dx  j ∫  z Σ  o ∏  v solve"),
     ("opt", "1 ⁻¹  2 ²  3 ³  6 ^  0 E  = →"),
+    ("opt", "/ fraction (Calc)  alt / mixed"),
     ("alt", "s sin⁻¹ c cos⁻¹ t tan⁻¹"),
     ("alt", "h sinh  j cosh  k tanh"),
     ("alt", "l log2 e exp r round f floor"),

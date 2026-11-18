@@ -12,12 +12,17 @@
 #   variables    any single letter except e and i (A, B, x, y, θ ...)
 #   special      ∫(f,a,b)  d/dx(f,a)  Σ(f,k,a,b)  ∏(f,k,a,b)  solve(f,guess)
 #   store        expr→A        (also  A=expr  at top level)
+#   fractions    FS a FM b FE  and mixed numbers  MS w MM a FM b FE
+#                (template markers, see calc/frac.py and mathtext.py)
 #
 # A function argument written in terms of x (or k for Σ) becomes a lambda.
 # Numbers are decimal (bcd.D, 15 significant digits): every literal becomes a
-# named D constant so that 0.1 is exactly one tenth.
+# named D constant so that 0.1 is exactly one tenth.  In exact mode (the Calc
+# screen) the same code runs with the literals bound to fractions (frac.Q),
+# so that 1/3+1/6 is exactly 1/2.
 from bcd import D
 from cardgcalc.calc import fn as F
+from cardgcalc.calc import frac
 
 SUP = {"⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "⁻": "-"}
 
@@ -47,24 +52,39 @@ CONSTS = {"π": "pi", "pi": "pi", "e": "e", "i": "i", "Ans": "v_Ans", "ans": "v_
 
 _NAMES = sorted(list(FUNCS) + list(SPECIAL) + list(CONSTS), key=lambda s: -len(s))
 _IDCHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZθ_0123456789"
+_MARKTOK = {frac.FS: "fs", frac.FM: "fm", frac.FE: "fe", frac.MS: "ms", frac.MM: "mm"}
 
 
 class CalcError(Exception):
     pass
 
 
-# literal text -> constant name, constant name -> D value
+# literal text -> constant name, constant name -> D value (and exact Q value)
 LITS = {}
 LITVAL = {}
+LITQ = {}
 
 
 def _lit(text):
     nm = LITS.get(text)
     if nm is None:
         nm = "_k%d" % len(LITS)
-        LITS[text] = nm
         LITVAL[nm] = D(text)
+        LITQ[nm] = frac.from_text(text)
+        LITS[text] = nm
     return nm
+
+
+def has_decimal(src):
+    """True if src contains a number written with a decimal point or E."""
+    try:
+        toks = tokenize(src)
+    except CalcError:
+        return False
+    for k, v in toks:
+        if k == "num" and ("." in v or "e" in v):
+            return True
+    return False
 
 
 def var_py(name):
@@ -83,6 +103,10 @@ def tokenize(s):
     while i < n:
         c = s[i]
         if c == " ":
+            i += 1
+            continue
+        if c in _MARKTOK:
+            toks.append((_MARKTOK[c], None))
             i += 1
             continue
         if c.isdigit() or (c == "." and i + 1 < n and s[i + 1].isdigit()):
@@ -290,7 +314,7 @@ class _Parser:
 
     def _starts_primary(self):
         k, v = self.peek()
-        if k in ("num", "var", "const", "func", "special"):
+        if k in ("num", "var", "const", "func", "special", "fs", "ms"):
             return True
         if k == "op" and v == "(":
             return True
@@ -381,6 +405,15 @@ class _Parser:
             return "%s(%s)" % (v, self.power())
         if k == "special":
             return self.special(v)
+        if k == "fs":
+            a = self._part("fm")
+            b = self._part("fe")
+            return "div(%s,%s)" % (a, b)
+        if k == "ms":
+            w = self._part("mm")
+            a = self._part("fm")
+            b = self._part("fe")
+            return "mixed(%s,%s,%s)" % (w, a, b)
         if k == "op" and v == "(":
             e = self.expr()
             self.expect_close()
@@ -388,6 +421,15 @@ class _Parser:
         if k is None:
             raise CalcError("Syntax error")
         raise CalcError("Syntax error")
+
+    def _part(self, end):
+        """One part of a fraction template, up to the marker token `end`."""
+        if self.peek()[0] == end:
+            raise CalcError("Syntax error")  # empty part
+        e = self.expr()
+        if not self.accept(end):
+            raise CalcError("Syntax error")
+        return "(%s)" % e
 
     def special(self, name):
         if not self.accept("op", "("):
@@ -469,30 +511,57 @@ class Context:
 
     def __init__(self, variables=None, angle="rad", complex_mode=False):
         self.vars = variables if variables is not None else {}
+        # exact values (frac.Q) of variables last stored in exact mode; used
+        # only while self.vars still holds the same value
+        self.exact = {}
         self.angle = angle
         self.complex = complex_mode
         self._ns = None
         self._ns_key = None
+        self._nsq = None
 
-    def namespace(self):
+    def namespace(self, exact=False):
         key = (self.angle, self.complex)
         if self._ns is None or self._ns_key != key:
             self._ns = F.namespace(self.angle, self.complex)
             self._ns_key = key
+            self._nsq = None
+        if exact:
+            if self._nsq is None:
+                self._nsq = frac.namespace(self._ns)
+            return self._nsq
         return self._ns
 
-    def _bind(self, ns, used):
+    def exact_var(self, name):
+        """Exact value of a variable: the fraction stored in exact mode, an
+        integer as a fraction, else the decimal value."""
+        v = self.vars.get(name, F.ZERO)
+        if not isinstance(v, D):
+            return v
+        q = self.exact.get(name)
+        if q is not None and q.dec() == v:
+            return q
+        if F.is_int(v):
+            return frac.from_dec(v) or v
+        return v
+
+    def _bind(self, ns, used, exact=False):
         for v in used:
             if v[0] == "#":
-                ns[v[1:]] = LITVAL[v[1:]]
+                ns[v[1:]] = (LITQ if exact else LITVAL)[v[1:]]
+            elif exact:
+                ns[var_py(v)] = self.exact_var(v)
             else:
                 ns[var_py(v)] = self.vars.get(v, F.ZERO)
 
-    def evaluate(self, src):
-        """Evaluate a calculator line.  Stores into Ans and target var."""
+    def evaluate(self, src, exact=False):
+        """Evaluate a calculator line.  Stores into Ans and target var.
+
+        exact=True computes with fractions where possible and may return a
+        frac.Q; the variables always receive the decimal value."""
         code, store, used = translate(src)
-        ns = self.namespace()
-        self._bind(ns, used)
+        ns = self.namespace(exact)
+        self._bind(ns, used, exact)
         try:
             val = eval(code, ns)
         except CalcError:
@@ -505,11 +574,24 @@ class Context:
             raise CalcError("Argument error")
         except NameError as e:
             raise CalcError("Syntax error")
+        q = None
+        if exact:
+            val = frac.exact(val)
+            if isinstance(val, frac.Q):
+                q = val
+                try:
+                    val = q.dec()
+                except (ValueError, OverflowError):
+                    raise CalcError("Math error")
         val = F.check(val, self.complex)
-        if store:
-            self.vars[store] = val
-        self.vars["Ans"] = val
-        return val
+        for name in (store, "Ans"):
+            if name:
+                self.vars[name] = val
+                if q is not None:
+                    self.exact[name] = q
+                else:
+                    self.exact.pop(name, None)
+        return q if q is not None else val
 
     def function(self, src, var="x"):
         """Compile an expression of `var` into a Python callable f(v).

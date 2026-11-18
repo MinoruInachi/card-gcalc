@@ -8,6 +8,7 @@ DEFAULTS = {
     "fmt": "norm",  # norm | fix | sci | eng
     "digits": 10,
     "complex": False,
+    "mixedfrac": False,  # Calc: show fractions above 1 as mixed numbers
     "brightness": 70,
     "sd_mount": True,
     "autosave": True,

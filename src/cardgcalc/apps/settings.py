@@ -9,7 +9,7 @@ from cardgcalc import i18n
 from cardgcalc.i18n import T
 from cardgcalc.hal import LEFT, RIGHT, ENTER, ESC
 
-VERSION = "0.3"
+VERSION = "0.4"
 
 
 def _onoff(v):

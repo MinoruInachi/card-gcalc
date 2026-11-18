@@ -138,7 +138,7 @@ In fields that take math (Calc, Graph, Table, Equation …), `opt` and `alt` ins
 | `d` / `z` / `o` / `v` | d/dx( Σ( ∏( solve( | deg( randint( rand() lcm( |
 | `1` / `2` / `3` / `6` / `0` | ⁻¹ ² ³ ^ E (×10ⁿ) | fact( ³ ∛( |
 | `8` | × | ∞ (Stats distribution bounds) |
-| `=` / `8` / `/` / `5` / `9` / `.` | → × ÷ % ( , | |
+| `=` / `8` / `/` / `5` / `9` / `.` | → × ÷ % ( , (`/` is a fraction on the Calc screen) | — ∞ mixed number (Calc screen) — — — |
 
 Press `fn`+`h` to see this list on the device.
 

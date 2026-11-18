@@ -18,7 +18,7 @@ Available modules:
 
 | Module | Contents |
 |---|---|
-| `cardgcalc` | Screen, keyboard, time, graphs, GPIO (this page) |
+| `cardgcalc` | Screen, keyboard, time, graphs, GPIO, RGB LED (this page) |
 | `turtle` | Turtle graphics ([turtle](#turtle)) |
 | `matplotlib.pyplot` | Line plots, scatter plots, bar charts, histograms ([matplotlib.pyplot](#matplotlibpyplot)) |
 | `ulab` | numpy / scipy compatible arrays ([ulab](#ulab)) |
@@ -210,7 +210,34 @@ i2c = cardgcalc.i2c_grove()
 print([hex(a) for a in i2c.scan()])
 ```
 
-> Caution: never apply more than 3.3 V to a pin. G40, G14 and G39 are used by the SD card, and G8 and G9 by the internal keyboard (I2C); do not drive them directly with the `machine` module.
+> Caution: never apply more than 3.3 V to a pin. G40, G14 and G39 are used by the SD card, G8 and G9 by the internal keyboard (I2C), and G21 by the RGB LED; do not drive them directly with the `machine` module.
+
+## RGB LED
+
+You can light the built-in RGB (full-colour) LED. It works on both the Cardputer-Adv and the Cardputer.
+
+| API | Description |
+|---|---|
+| `led(r, g, b)` | Light the LED in colour r, g, b (0–255) |
+| `led(c)` | Light it in colour c: an `(r, g, b)` tuple, a colour name (`"red"` ...), a constant such as `RED`, or a `color()` value |
+| `led(None)` / `led_off()` | Turn it off (`led(0, 0, 0)` and `led("black")` do the same) |
+| `led()` | Return the current colour as `(r, g, b)` |
+| `led_brightness(pct=None)` | Brightness (0–100 %), applied to every colour. Returns the current value |
+
+- When the script ends, the LED is turned off and the brightness goes back to 100 % (in the shell: when you leave the shell).
+- At full brightness the LED is very bright; about `led_brightness(10)` is usually enough.
+- The colour constants (`RED` ...) are screen values, so on the LED they are slightly off. Use `(r, g, b)` for exact colours.
+
+Example: fade the LED from red to green
+
+```python
+import cardgcalc as cg
+cg.led_brightness(20)
+for i in range(256):
+    cg.led(255 - i, i, 0)   # red -> green
+    cg.sleep_ms(10)
+cg.wait_key()
+```
 
 ## turtle
 

@@ -73,6 +73,12 @@ def div(a, b):
     return a / b
 
 
+def mixed(w, a, b):
+    """Mixed number: whole part w and fraction a/b (-2 1/2 is -2.5)."""
+    q = div(a, b)
+    return w - q if w < 0 else w + q
+
+
 def _small_frac(x, maxden=64):
     """x ~ p/q with q <= maxden (within 1e-12)?  returns (p, q) or None.
     Continued fraction of the exact decimal value, in integer arithmetic."""
@@ -614,7 +620,7 @@ def namespace(angle="rad", complex_mode=False):
     """Build the evaluation namespace for the given angle unit."""
     g = globals()
     ns = {}
-    for k in ("pi", "e", "inf", "i", "div", "pw", "fact", "nPr", "nCr", "ln", "log", "log2", "exp",
+    for k in ("pi", "e", "inf", "i", "div", "mixed", "pw", "fact", "nPr", "nCr", "ln", "log", "log2", "exp",
               "sqrt", "cbrt", "root", "abs_", "floor", "ceil", "round_", "int_", "fpart", "sign",
               "mod", "gcd", "lcm", "min_", "max_", "mean", "sum_", "rand", "randint", "isprime",
               "gamma", "erf", "erfc", "hypot", "re", "im", "conj", "integ", "deriv", "sigma",

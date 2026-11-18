@@ -108,5 +108,6 @@ def run():
             gc.collect()
     finally:
         runner.stop()
+        hal.led_reset()
         del ns
         gc.collect()

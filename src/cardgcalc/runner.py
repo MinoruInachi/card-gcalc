@@ -232,6 +232,7 @@ def run_source(src, name="script", path=None):
         err = e
     finally:
         stop()
+        hal.led_reset()
         if d is not None:
             try:
                 sys.path.remove(d)

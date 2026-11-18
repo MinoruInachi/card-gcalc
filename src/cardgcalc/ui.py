@@ -101,10 +101,28 @@ def _hook_mods():
 # ---------------------------------------------------------------------------
 # LineEdit: single line math/text input
 # ---------------------------------------------------------------------------
+_FS = "\x0e"  # fraction template markers (same as calc/frac.py)
+_FM = "\x0f"
+_FE = "\x10"
+_MS = "\x11"
+_MM = "\x12"
+_MARKS = _FS + _FM + _FE + _MS + _MM
+
+
+def _has_marks(s):
+    for c in _MARKS:
+        if c in s:
+            return True
+    return False
+
+
 class LineEdit:
     """Single-line editor.
 
     math=True enables opt/alt math tokens and token-wise deletion.
+    frac=True (Calc) adds fraction templates: opt+/ a fraction, alt+/ a
+    mixed number, drawn stacked (see mathtext.py); ↑ ↓ move between the
+    numerator and the denominator.
     handle(key) returns:
         None      key consumed
         'enter'   Enter pressed
@@ -112,10 +130,12 @@ class LineEdit:
         Key       not handled (caller may use it: UP/DOWN/F-keys ...)
     """
 
-    def __init__(self, text="", math=True, font="medium", maxlen=200):
+    def __init__(self, text="", math=True, font="medium", maxlen=200, frac=False):
         self.text = text
         self.cur = len(text)
         self.math = math
+        self.frac = frac
+        self.hscroll = 0  # pixels (two-dimensional drawing)
         self.font = gfx.font(font)
         self.maxlen = maxlen
         self.scroll = 0
@@ -128,6 +148,7 @@ class LineEdit:
         self.text = text
         self.cur = len(text)
         self.scroll = 0
+        self.hscroll = 0
 
     def insert(self, s):
         if self.replace_on_type:
@@ -137,10 +158,62 @@ class LineEdit:
         if len(self.text) + len(s) > self.maxlen:
             return
         t = self.text
-        if not self.insert_mode and self.cur < len(t):
+        if not self.insert_mode and self.cur < len(t) and t[self.cur] not in _MARKS:
             t = t[: self.cur] + t[self.cur + len(s):]
         self.text = t[: self.cur] + s + t[self.cur:]
         self.cur += len(s)
+
+    def insert_template(self, mixed):
+        """Fraction (or mixed number) template at the cursor.  Digits right
+        before the cursor become the numerator (or the whole part)."""
+        t = self.text
+        c = self.cur
+        if len(t) + 5 > self.maxlen:
+            return
+        j = c
+        while j > 0 and (t[j - 1].isdigit() or t[j - 1] == "."):
+            j -= 1
+        lead = t[j:c]
+        if mixed:
+            tpl = _MS + lead + _MM + _FM + _FE
+        else:
+            tpl = _FS + lead + _FM + _FE
+        self.replace_on_type = False
+        self.text = t[:j] + tpl + t[c:]
+        # cursor in the first part, or in the next one if digits were taken
+        self.cur = j + len(lead) + (2 if lead else 1)
+
+    def updown(self, key):
+        """↑ / ↓ inside a template: between numerator and denominator.
+        Returns False when the cursor is not inside a template."""
+        from cardgcalc import mathtext
+
+        t = self.text
+        enc = mathtext.enclosing(t, self.cur)
+        if enc is None:
+            return False
+        while enc is not None:
+            p, seps, end = enc
+            if len(seps) == (1 if t[p] == _FS else 2):
+                fm = seps[-1]
+                first = seps[0] + 1 if t[p] == _MS else p + 1
+                if key == DOWN and first <= self.cur <= fm:
+                    self.cur = end
+                    return True
+                if key == DOWN and t[p] == _MS and self.cur < first:
+                    self.cur = fm  # whole part -> numerator
+                    return True
+                if key == UP and fm < self.cur <= end:
+                    self.cur = fm
+                    return True
+            enc = mathtext.enclosing(t, p)
+        return True
+
+    def _template_empty(self, p):
+        from cardgcalc import mathtext
+
+        seps, end = mathtext.find(self.text, p)
+        return end - p - 1 == len(seps), end
 
     def _tok_before(self):
         if self.math:
@@ -160,6 +233,11 @@ class LineEdit:
         key = k.key
         if self.replace_on_type and key in (LEFT, RIGHT, BS, DEL, "HOME", "END"):
             self.replace_on_type = False
+        if self.frac and (k.mods & (OPT | ALT)) and k.base == "/":
+            self.insert_template(bool(k.mods & ALT))
+            return None
+        if self.frac and key in (UP, DOWN) and self.updown(key):
+            return None
         if self.math and (k.mods & (OPT | ALT)):
             tok = keymap.lookup(k)
             if tok:
@@ -184,12 +262,29 @@ class LineEdit:
             self.cur = len(self.text)
             return None
         if key == BS:
+            c = self.text[self.cur - 1] if self.cur > 0 else ""
+            if c and c in _MARKS:
+                # at the start of a template part: delete an empty template,
+                # otherwise just step back over the marker
+                if c in (_FS, _MS):
+                    empty, end = self._template_empty(self.cur - 1)
+                    if empty:
+                        self.text = self.text[: self.cur - 1] + self.text[end + 1:]
+                self.cur -= 1
+                return None
             if self.cur > 0:
                 n = self._tok_before()
                 self.text = self.text[: self.cur - n] + self.text[self.cur:]
                 self.cur -= n
             return None
         if key == DEL:
+            c = self.text[self.cur] if self.cur < len(self.text) else ""
+            if c and c in _MARKS:
+                if c in (_FS, _MS):
+                    empty, end = self._template_empty(self.cur)
+                    if empty:
+                        self.text = self.text[: self.cur] + self.text[end + 1:]
+                return None
             if self.cur < len(self.text):
                 n = self._tok_after()
                 self.text = self.text[: self.cur] + self.text[self.cur + n:]
@@ -210,7 +305,49 @@ class LineEdit:
             return None
         return k
 
+    def height(self):
+        """Height of the text as drawn (taller with fraction templates)."""
+        if self.frac and _has_marks(self.text):
+            from cardgcalc import mathtext
+
+            _, up, down = mathtext.measure(self.text, self.font)
+            return max(self.font.h, up + down)
+        return self.font.h
+
+    def _draw2d(self, x, y, w, fg, bg, cursor):
+        from cardgcalc import mathtext
+
+        f = self.font
+        fb = gfx.fb()
+        t = self.text
+        tw, up, down = mathtext.measure(t, f)
+        h = up + down
+        fb.fill_rect(x, y, w, h, bg)
+        pos = {}
+        mathtext.draw(t, f, 0, 0, fg, pos, -(1 << 30))  # positions only
+        cx = pos.get(self.cur, (tw, 0, 0))[0]
+        if cx - self.hscroll > w - 2:
+            self.hscroll = cx - w + 2
+        if cx < self.hscroll:
+            self.hscroll = cx
+        if tw - self.hscroll < w - 2:
+            self.hscroll = max(0, tw - w + 2)
+        ox = x - self.hscroll
+        pos = {}
+        mathtext.draw(t, f, ox, y + up, fg, pos, x + w)
+        if self.hscroll > 0:
+            fb.fill_rect(x, y, 1, h, gfx.ACCENT)
+        if tw - self.hscroll > w:
+            fb.fill_rect(x + w - 1, y, 1, h, gfx.ACCENT)
+        if cursor:
+            px, top, ch = pos.get(self.cur, (ox + tw, y, h))
+            if x <= px < x + w:
+                fb.fill_rect(px, top, 1, ch, gfx.ACCENT)
+
     def draw(self, x, y, w, fg=gfx.FG, bg=gfx.BG, cursor=True, align_right=False):
+        if self.frac and _has_marks(self.text):
+            self._draw2d(x, y, w, fg, bg, cursor)
+            return
         f = self.font
         fb = gfx.fb()
         fb.fill_rect(x, y, w, f.h, bg)

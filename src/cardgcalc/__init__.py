@@ -18,6 +18,8 @@
 #   plot(f, xmin=-10, xmax=10, ymin=None, ymax=None)
 # GPIO  (Grove: G1 G2,  EXT header: G3 G4 G5 G6 G13 G15)
 #   pin_out(p, v), pin_in(p, pull=None), analog(p) -> volts, pwm(p, freq, duty%)
+# RGB LED (built in)
+#   led(c) / led(r,g,b) / led() -> (r,g,b), led_off(), led_brightness(pct)
 # Misc
 #   sleep_ms(ms), sleep(s), ticks_ms(), battery() -> %
 import time
@@ -514,6 +516,43 @@ def tone(p, freq, ms):
         sleep_ms(ms)
     finally:
         pwm(p, duty=None)
+
+
+# ---- RGB LED -------------------------------------------------------------------
+def _led_rgb(c):
+    if c is None:
+        return (0, 0, 0)
+    if isinstance(c, str):
+        c = _NAMED.get(c.lower())
+        if c is None:
+            raise ValueError("unknown colour")
+    if isinstance(c, (tuple, list)):
+        return (int(c[0]), int(c[1]), int(c[2]))
+    return hal.unrgb(int(c))  # a value from color() or a constant
+
+
+def led(r=(), g=None, b=None):
+    """Light the built-in RGB LED.
+
+    led(255, 0, 0), led((255, 0, 0)), led("red") or led(RED);
+    led(None) or led("black") turns it off.  led() returns the colour as an
+    (r, g, b) tuple."""
+    if r == ():
+        return hal.led_get()
+    if g is None:
+        hal.led_set(*_led_rgb(r))
+    else:
+        hal.led_set(r, g, b)
+
+
+def led_off():
+    hal.led_set(0, 0, 0)
+
+
+def led_brightness(pct=None):
+    """Brightness of the LED in percent (0-100, scales every colour);
+    returns the current value.  Reset to 100 when the script ends."""
+    return hal.led_level(pct)
 
 
 def i2c_grove(freq=100000):

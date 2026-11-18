@@ -54,3 +54,7 @@ No solution	解なし
 # --- key map help (fn lines)
 ; . , / arrows  ` esc  1-6 F1-F6	;.,/ 矢印  ` 戻る  1-6 F1-F6
 BS del  - home  = end  [ ] page	BS 削除 - 行頭 = 行末 [ ] ページ
+Fraction	分数
+improper	仮分数
+mixed	帯分数
+/ fraction (Calc)  alt / mixed	/ 分数 (計算)  alt / 帯分数

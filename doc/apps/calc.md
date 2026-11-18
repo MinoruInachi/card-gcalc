@@ -1,6 +1,6 @@
 # Calc
 
-Calc is the main calculation screen. Type an expression, press `Enter`, and the expression and its result are added to the history above the input line. It handles variables, the previous answer (`Ans`), exact display of fractions, π and √, angle units, display formats and complex numbers.
+Calc is the main calculation screen. Type an expression, press `Enter`, and the expression and its result are added to the history above the input line. Fractions can be typed in stacked form, numerator over denominator (mixed numbers too), and are calculated exactly, so answers such as `1/2` are shown as fractions. It also handles variables, the previous answer (`Ans`), exact display of π and √, angle units, display formats and complex numbers.
 
 ![Calc screen with three results](../images/calc-main.png)
 
@@ -13,7 +13,7 @@ Arrows are written ↑ ↓ ← → on this page. They are `fn`+`;` `.` `,` `/`. 
 | Area | Contents |
 |---|---|
 | Status bar (top) | Title "Calc", modifier latches, and on the right the mode: `Cplx` when complex numbers are on, `FIX3` / `SCI5` / `ENG4` and so on when the format is not Norm, and the angle unit (RAD / DEG / GRA), then the battery |
-| History | Past calculations, newest at the bottom. Each entry shows the expression on the left (gray) and the result on the right. Exact forms are shown in blue, errors in red |
+| History | Past calculations, newest at the bottom. Each entry shows the expression on the left (gray) and the result on the right. Fractions and other exact forms are shown in blue, errors in red |
 | Input line | The expression you are typing, with the cursor |
 | Soft keys (bottom) | F1 Exact, F2 Vars, F3 Angle, F4 Format, F5 Clear, F6 Keys |
 
@@ -27,12 +27,15 @@ While you browse the history, the soft keys are replaced by a hint line: `` Ente
 |---|---|
 | Characters, digits | Type into the input line. `*` types `×` and `/` types `÷` |
 | `opt` / `alt` + key | Insert a math token, for example `opt`+`s` sin(, `opt`+`q` √(, `opt`+`p` π, `opt`+`=` → |
+| `opt`+`/` | Insert a fraction. Digits typed just before become the numerator (see Fractions below) |
+| `alt`+`/` | Insert a mixed number. Digits typed just before become the whole part |
+| ↑ ↓ (inside a fraction) | Move between the numerator and the denominator. ↓ in the whole part of a mixed number moves to the numerator |
 | ← → | Move the cursor (tokens such as `sin(` count as one character) |
 | `BS` / `fn`+`BS` | Delete left / right of the cursor (a token is deleted as a whole) |
 | `fn`+`-` / `fn`+`=` | Start / end of the line |
 | `ctrl`+`u` | Clear the line |
 | `Enter` | Evaluate. On an empty line, evaluate the last expression again |
-| ↑ | Select the newest history entry (history mode, below) |
+| ↑ | Select the newest history entry (history mode, below). Inside a fraction it moves between the numerator and the denominator |
 | ESC | Clear the line. On an empty line, go back to the home screen |
 | `fn`+`h` | Key map help (same as F6) |
 
@@ -42,7 +45,7 @@ If the line is empty and you start with an operator (`+` `-` `×` `÷` `^` `²` 
 
 | Key | Label | Action |
 |---|---|---|
-| F1 | Exact | Switch the newest result between decimal and exact form (fraction, multiple of π, or (p/q)√n). Only results that have an exact form change |
+| F1 | Exact | Switch the newest result between decimal and exact form (fraction, multiple of π, or (p/q)√n). A fraction answer switches between the fraction and the decimal. Only results that have an exact form change |
 | F2 | Vars | List the stored variables and their values ("Variables (Enter: insert)"). `Enter` inserts the selected name into the input line |
 | F3 | Angle | Change the angle unit: RAD → DEG → GRA → RAD. This is the same setting as Settings → Angle unit |
 | F4 | Format | Open the "Display format" menu (below) |
@@ -58,6 +61,7 @@ The **Display format** menu (F4):
 | Sci | Scientific notation. Asks "Significant digits (1-10)" |
 | Eng | Engineering notation (exponent a multiple of 3). Asks "Significant digits (1-10)" |
 | Complex: on / off | Turn complex-number results on or off |
+| Fraction: improper / mixed | Show fraction answers above 1 as improper fractions (`7/3`) or mixed numbers (`2 1/3`) |
 
 The format also applies to Equation, Stats and Matrix results.
 
@@ -69,7 +73,7 @@ Press ↑ on the input line to select a history entry. The selected entry is hig
 |---|---|
 | ↑ ↓ | Select an older / newer entry. ↓ past the newest entry returns to the input line |
 | `Enter` | Insert the entry's expression into the input line |
-| → or `/` | Insert the entry's result (as shown, decimal or exact) into the input line |
+| → or `/` | Insert the entry's result (as shown, decimal or exact) into the input line. A fraction is inserted in fraction form |
 | F1 | Switch the selected entry between decimal and exact form |
 | `BS` / `fn`+`BS` | Delete the entry |
 | ESC or ← | Back to the input line |
@@ -83,16 +87,41 @@ In history mode the plain `;` `.` `,` `/` keys work as arrows too.
 
 1. Type `1+2*3` and press `Enter`. The result is `7` (the screen shows `1+2×3`).
 2. Type `2`, press `opt`+`s` (sin(), `opt`+`p` (π), then type `/6)` and press `Enter`. `2sin(π÷6)` is `1` (in RAD).
-3. Type `1/3+1/6` and press `Enter`. The result is `0.5`.
+3. Type `1/3+1/6` and press `Enter`. It is calculated as fractions and the result is `1/2` (in blue).
 4. Press `opt`+`q` (√(), type `8)` and press `Enter`. The result is `2.828427125`.
 5. Press F1. The last result changes to `2√2`.
-6. Press ↑ ↑ to select `1÷3+1÷6`, then press F1. It shows `1/2`.
+6. Press ↑ ↑ to select `1÷3+1÷6`, then press F1. It shows the decimal `0.5`. Press F1 again to go back to `1/2`.
 
 ![History mode with an exact result selected](../images/calc-hist.png)
 
-7. Press ESC to go back to the input line. Exact results stay blue.
+7. Press ESC to go back to the input line. Exact results are shown in blue.
 
 ![Exact forms 1/2 and 2√2](../images/calc-exact.png)
+
+### Fractions
+
+`opt`+`/` inserts a fraction box where you type the numerator above the denominator; `alt`+`/` inserts a mixed number. Arithmetic and integer powers on integers and fractions are calculated exactly, as fractions.
+
+1. Press `2`, then `opt`+`/`. The `2` becomes the numerator and the cursor moves to the denominator. Press `3`.
+2. Press → to leave the fraction, type `+1`, press `opt`+`/`, `4`, then `Enter`. 2/3+1/4 is `11/12`.
+3. Press `1`, then `alt`+`/`. The `1` becomes the whole part of a mixed number and the cursor moves to the numerator. Press `1`, ↓, `2` for one and a half.
+4. Press → to leave it, type `+2`, press `alt`+`/`, `1`, ↓, `3`.
+
+![Typing fractions and mixed numbers](../images/calc-frac.png)
+
+5. Press `Enter`. The result is `23/6`.
+6. Press F4 (Format), then `6` (Fraction: improper). Answers are now shown as mixed numbers: `3 5/6`. Choose it again to go back to improper fractions.
+
+![An answer shown as a mixed number](../images/calc-mixed.png)
+
+- ← → also move through the numerator and denominator. Fractions and expressions (such as `1+2`) can go inside a fraction.
+- `BS` at the start of a numerator or denominator moves the cursor out of the box; an empty box is deleted by `BS`.
+- Digits right before the box are taken into the numerator (the whole part for a mixed number). A fraction right after π, a variable or `)` is multiplied: `π` followed by `opt`+`/` 3/4 is `π×3/4`.
+- Fractions can also be typed with `/` (`÷`): `2/3+1/4` is also `11/12`. An expression containing a decimal number (`0.5+1/4`) shows its answer as a decimal (`0.75`); press F1 to see `3/4`.
+- Fraction answers are reduced (`6/4` is `3/2`, and `1/3×3` is `1`) and drawn in stacked form.
+- Inserting a history answer with → keeps the fraction form.
+- A fraction stored in a variable (`1/3→A`) stays a fraction on the Calc screen: `3A` is `1`.
+- Once π, a √ that is not a perfect square, or a function such as sin is used, the calculation continues in decimal. `√(9/4)` is `3/2`, but `√2` is a decimal.
 
 ### Variables and Ans
 
@@ -132,8 +161,9 @@ With Complex off, results that are not real numbers, such as `√(-4)`, give `No
 - **Precision**: numbers are decimal with a 15-digit mantissa and exponents up to ±99. Every operation rounds to 15 digits, so `0.1+0.2-0.3` is exactly 0. Functions are computed to 18 digits and rounded to 15. Results smaller than 1E-99 become 0; larger than the range give `Math error`.
 - **Trigonometry**: in DEG and GRA the period is reduced exactly, so `sin(180)` is 0. In RAD, arguments written as multiples of π (`sin(π)`, `cos(π/2)`) are exact.
 - **Display**: Norm shows up to 10 significant digits. The full 15 digits are kept for later calculations.
-- **Exact forms**: fractions with denominators up to 10000, multiples of π (denominator up to 1000), and (p/q)√n. Integers and complex results have no exact form, and F1 does nothing for them.
-- **Variables**: a single letter except `e` and `i` (A–Z, x, y, θ …). Letters written together multiply: `AB` is A×B. `A=…` stores only when the left side is one letter; otherwise `=` is a comparison. Variables not yet set are 0. Variables are shared with the other calculator apps (Graph, Table, Equation …) and saved in `/data/vars.json`.
+- **Fractions**: on the Calc screen, arithmetic, integer powers, `%`, `⁻¹`, `²`, √ of perfect squares, `abs` `floor` `ceil` `int` `fpart` `mod` `min` `max` `!`, and `Σ` `∏` over integer ranges keep fractions exact. Numerators and denominators can have up to 30 digits; beyond that the value becomes a 15-digit decimal. Fractions up to 20 characters long are displayed; longer ones are shown as decimals. When the expression contains a decimal number (`0.5`, `1E-3`), the answer is shown as a decimal (F1 shows the fraction). The other apps (Graph, Table, Equation …) still calculate with 15-digit decimals. Fraction and mixed-number boxes are available on the Calc screen only. A mixed number with a negative whole part (`-2` and 1/2) is taken as -2.5.
+- **Exact forms**: for answers that are not fractions: fractions with denominators up to 10000, multiples of π (denominator up to 1000), and (p/q)√n. Integers and complex results have no exact form, and F1 does nothing for them.
+- **Variables**: a single letter except `e` and `i` (A–Z, x, y, θ …). Letters written together multiply: `AB` is A×B. `A=…` stores only when the left side is one letter; otherwise `=` is a comparison. Variables not yet set are 0. Variables are shared with the other calculator apps (Graph, Table, Equation …) and saved in `/data/vars.json`. The other apps receive them as 15-digit decimals. Fraction values are saved in `/data/vars_q.json` and used on the Calc screen until another app changes the variable.
 - **Errors**: `Syntax error`, `Math error`, `Math error: ÷0`, `Non-real error`, `Argument error` are shown in red in place of the result.
 - **History**: the last 40 entries are kept and saved in `/data/calc_hist.json` when you leave the app.
 - **Settings**: angle unit, display format and complex mode are saved with the other settings and are also available in the Settings app.
